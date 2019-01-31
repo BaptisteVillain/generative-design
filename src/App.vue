@@ -5,21 +5,29 @@
 </template>
 
 <style lang="scss">
+
+@font-face {
+  font-family: 'Aktiv Grotesk';
+  src: url('~@/assets/fonts/AktivGrotesk-Medium.woff2') format('woff2'),
+    url('~@/assets/fonts/AktivGrotesk-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Aktiv Grotesk';
+  src: url('~@/assets/fonts/AktivGrotesk-Bold.woff2') format('woff2'),
+    url('~@/assets/fonts/AktivGrotesk-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Aktiv Grotesk', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  text-align: left;
+  color: #000000;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+
 </style>
