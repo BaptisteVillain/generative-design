@@ -1,4 +1,5 @@
 # generative-design
+[![Netlify Status](https://api.netlify.com/api/v1/badges/801da630-595a-4bce-b620-8b54d39ce61b/deploy-status)](https://app.netlify.com/sites/erys/deploys)
 
 ## Project setup
 ```
