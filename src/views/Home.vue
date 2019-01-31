@@ -1,12 +1,17 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
+    <render/>
   </div>
 </template>
 
 <script>
 
+import Render from '@/components/Render.vue';
+
 export default {
   name: 'home',
+  components: {
+    Render
+  }
 }
 </script>

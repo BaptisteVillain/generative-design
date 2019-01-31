@@ -22,12 +22,20 @@
   font-style: normal;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 #app {
   font-family: 'Aktiv Grotesk', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #000000;
+  width: 100%;
+  height: 100%;
 }
 
 </style>
