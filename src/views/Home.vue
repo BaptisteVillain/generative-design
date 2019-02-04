@@ -1,17 +1,17 @@
 <template>
   <div class="home">
-    <render/>
+    <render-webgl/>
   </div>
 </template>
 
 <script>
 
-import Render from '@/components/Render.vue';
+import RenderWEBGL from '@/components/RenderWEBGL.vue';
 
 export default {
   name: 'home',
   components: {
-    Render
+    RenderWebgl: RenderWEBGL
   }
 }
 </script>
