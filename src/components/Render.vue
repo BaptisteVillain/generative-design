@@ -16,8 +16,8 @@ export default {
   data() {
     return {
       size: {
-        width: 500,
-        height: 700,
+        width: 350,
+        height: 500,
       },
       context: null,
       amplitude: 52,
@@ -164,9 +164,6 @@ export default {
 
 <style lang="scss">
   #render {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     display: flex;
