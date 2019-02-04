@@ -3,7 +3,9 @@
     <Header/>
     <div class="container">
       <render/>
+      <render-webgl/>
     </div>
+
   </div>
 </template>
 
@@ -11,12 +13,15 @@
 
 import Header from '@/components/Header.vue';
 import Render from '@/components/Render.vue';
+import RenderWEBGL from '@/components/RenderWEBGL.vue';
+
 
 export default {
   name: 'home',
   components: {
     Header,
     Render,
+    RenderWebgl: RenderWEBGL
   }
 }
 </script>
