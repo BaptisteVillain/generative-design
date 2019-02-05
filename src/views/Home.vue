@@ -2,8 +2,11 @@
   <div class="home">
     <Header/>
     <div class="container">
-      <render/>
-      <render-webgl/>
+      <div class="wrapper">
+        <render/>
+        <Form/>
+      </div>
+      <!-- <render-webgl/> -->
     </div>
 
   </div>
@@ -14,6 +17,7 @@
 import Header from '@/components/Header.vue';
 import Render from '@/components/Render.vue';
 import RenderWEBGL from '@/components/RenderWEBGL.vue';
+import Form from '@/components/Form.vue';
 
 
 export default {
@@ -21,7 +25,8 @@ export default {
   components: {
     Header,
     Render,
-    RenderWebgl: RenderWEBGL
+    RenderWebgl: RenderWEBGL,
+    Form
   }
 }
 </script>
@@ -30,5 +35,11 @@ export default {
 .home{
   background-color: $black;
   height: 100vh;
+  color: #fff;
+}
+
+.wrapper{
+  display: flex;
+  flex-direction: row;
 }
 </style>

@@ -16,8 +16,8 @@ export default {
   data() {
     return {
       size: {
-        width: 350,
-        height: 500,
+        width: 500,
+        height: 700,
       },
       context: null,
       amplitude: 100,
@@ -97,7 +97,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   #render {
     width: 100%;
     height: 100%;
