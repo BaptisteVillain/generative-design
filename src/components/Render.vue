@@ -59,6 +59,7 @@ export default {
 
       let data = this.getDataFromAudio()
       this.drawBackground(data);
+      this.textVolume(Math.round(data.t[0]/40)-2)
       
       this.frames++;
     },
@@ -125,6 +126,13 @@ export default {
       this.analyser.getByteFrequencyData(freqByteData);
       this.analyser.getByteTimeDomainData(timeByteData);
       return {f:freqByteData, t:timeByteData}; // array of all 1024 levels
+    },
+    textVolume(volume) {
+      for (let i = 1; i <= volume; i++) {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "red";
+        this.context.fillText("Hello World", this.$refs.canvas.width-200, (30*i));
+      }
     }
   }
 }
