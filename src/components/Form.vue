@@ -96,6 +96,11 @@ export default {
       shirtsize:'XL'
     }
   },
+  watch: {
+    step: function () {
+      this.$store.commit('setData', this.registration);
+    }
+  },
   methods:{
     prev() {
       this.step--;

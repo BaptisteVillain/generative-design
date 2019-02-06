@@ -6,7 +6,7 @@
 
 <script>
 
-// import VueP5 from 'vue-p5';
+import {mapState} from 'vuex';
 
 export default {
   name: 'Render',
@@ -32,17 +32,20 @@ export default {
       audio: null,
     }
   },
+  computed: mapState([
+    'data'
+  ]),
   mounted() {
     this.context = this.$refs.canvas.getContext('2d');
 
     this.image = new Image();
     this.image.addEventListener('load', () => {
       this.setup();
-      this.setupBackground();
+      // this.setupBackground();
       this.animation = requestAnimationFrame(this.render);
     })
 
-    this.image.src = require('@/assets/img/background-2.jpg');
+    this.image.src = require('@/assets/img/background.png');
   },
   methods: {
     async setup() {
@@ -58,7 +61,8 @@ export default {
       this.context.clearRect(0, 0, this.size.width, this.size.height);
 
       let data = this.getDataFromAudio()
-      this.drawBackground(data);
+      this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
+      // this.drawBackground(data);
       this.textVolume(Math.round(data.t[0]/40)-2)
       this.textStatic()
       
@@ -74,9 +78,11 @@ export default {
         this.pixels[i] = source.data[i];
         this.result.data[i] = 255;
       }
+
+      this.drawBackground();
     },
     drawBackground(data) {
-      const T = this.frames * this.interval * .6 / (1000-data.f[0]);
+      const T = this.frames * this.interval * 2 / (1000-data.f[0]);
       let xs;
       let ys;
       // console.log(data)
@@ -130,17 +136,17 @@ export default {
     },
     textVolume(volume) {
       for (let i = 1; i <= volume; i++) {
-        this.context.font = "92px Arial";
-        this.context.fillStyle = "red";
+        this.context.font = "92px Aktiv Grotesk";
+        this.context.fillStyle = "white";
         this.context.fillText("ERYS", 263, (70*i));
       }
     },
     textStatic() {
-      this.context.font = "12px Arial";
-      this.context.fillStyle = "blue";
+      this.context.font = "12px Aktiv Grotesk";
+      this.context.fillStyle = "white";
       this.context.fillText("JADEN SMITH - ERYS", 50, 40);
       this.context.fillText("24.02.19", 50, 58);
-      this.context.font = "10px Arial";
+      this.context.font = "10px Aktiv Grotesk";
       this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
     }
   }
