@@ -16,8 +16,10 @@ export default {
   data() {
     return {
       size: {
-        width: 595,
-        height: 842,
+        // width: 595,
+        // height: 842,
+        width: 500,
+        height: 700
       },
       context: null,
       amplitude: 100,
@@ -60,10 +62,10 @@ export default {
       
       this.context.clearRect(0, 0, this.size.width, this.size.height);
 
-      let data = this.getDataFromAudio()
-      this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
-      // this.drawBackground(data);
-      this.textVolume(Math.round(data.t[0]/40)-2)
+      let audioData = this.getDataFromAudio()
+      // this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
+      this.drawStaticBackground();
+      this.textVolume(Math.round(audioData.t[0]/40)-2)
       this.textStatic()
       
       this.frames++;
@@ -85,7 +87,6 @@ export default {
       const T = this.frames * this.interval * 2 / (1000-data.f[0]);
       let xs;
       let ys;
-      // console.log(data)
 
       for (let x = this.amplitude; x < this.size.width - this.amplitude; ++x) {
         ys = this.amplitude * Math.cos(2 * Math.PI * (3 * x / this.size.width + T));
@@ -148,16 +149,19 @@ export default {
       this.context.fillText("24.02.19", 50, 58);
       this.context.font = "10px Aktiv Grotesk";
       this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
+    },
+    drawStaticBackground() {
+      this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  #render {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
+  // #render {
+  //   width: 100%;
+  //   height: 100%;
+  //   display: flex;
+  //   align-items: center;
+  // }
 </style>

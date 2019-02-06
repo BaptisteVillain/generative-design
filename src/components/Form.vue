@@ -118,3 +118,9 @@ export default {
 }
 
 </script>
+
+<style lang="scss">
+  #form {
+    padding-left: 150px;
+  }
+</style>
