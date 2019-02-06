@@ -16,8 +16,8 @@ export default {
   data() {
     return {
       size: {
-        width: 500,
-        height: 700,
+        width: 595,
+        height: 842,
       },
       context: null,
       amplitude: 100,
@@ -60,6 +60,7 @@ export default {
       let data = this.getDataFromAudio()
       this.drawBackground(data);
       this.textVolume(Math.round(data.t[0]/40)-2)
+      this.textStatic()
       
       this.frames++;
     },
@@ -129,10 +130,18 @@ export default {
     },
     textVolume(volume) {
       for (let i = 1; i <= volume; i++) {
-        this.context.font = "30px Arial";
+        this.context.font = "92px Arial";
         this.context.fillStyle = "red";
-        this.context.fillText("Hello World", this.$refs.canvas.width-200, (30*i));
+        this.context.fillText("ERYS", 263, (70*i));
       }
+    },
+    textStatic() {
+      this.context.font = "12px Arial";
+      this.context.fillStyle = "blue";
+      this.context.fillText("JADEN SMITH - ERYS", 50, 40);
+      this.context.fillText("24.02.19", 50, 58);
+      this.context.font = "10px Arial";
+      this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
     }
   }
 }
