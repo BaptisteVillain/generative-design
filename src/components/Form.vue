@@ -99,6 +99,9 @@ export default {
   watch: {
     step: function () {
       this.$store.commit('setData', this.registration);
+    },
+    registration: function () {
+      this.$store.commit('setData', this.registration);
     }
   },
   methods:{
