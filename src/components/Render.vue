@@ -28,6 +28,8 @@ export default {
       pixels: [],
       stride: null,
       result: [],
+      analyser: null,
+      audio: null,
     }
   },
   mounted() {
@@ -48,13 +50,15 @@ export default {
       this.$refs.canvas.height = this.size.height;
       this.pixels = new Array(4 * this.size.width * this.size.height);
       this.stride = this.size.width * 4;
+      this.soundSetup()
     },
     render() {
       this.animation = requestAnimationFrame(this.render);
       
       this.context.clearRect(0, 0, this.size.width, this.size.height);
-  
-      this.drawBackground();
+
+      let data = this.getDataFromAudio()
+      this.drawBackground(data);
       
       this.frames++;
     },
@@ -69,10 +73,11 @@ export default {
         this.result.data[i] = 255;
       }
     },
-    drawBackground() {
-      const T = this.frames * this.interval * .6 / 1000;
+    drawBackground(data) {
+      const T = this.frames * this.interval * .6 / (1000-data.f[0]);
       let xs;
       let ys;
+      // console.log(data)
 
       for (let x = this.amplitude; x < this.size.width - this.amplitude; ++x) {
         ys = this.amplitude * Math.cos(2 * Math.PI * (3 * x / this.size.width + T));
@@ -92,6 +97,34 @@ export default {
       }
 
       this.context.putImageData(this.result, 0, 0);
+    },
+    soundSetup() {
+
+      this.audio = new Audio();
+      this.audio.src = require('@/assets/music/Jaden Smith - Watch Me.mp3')
+      this.audio.load();
+
+      let duration=0;
+      window.AudioContext = window.AudioContext||window.webkitAudioContext; // old safari trick
+      const audioContext = new AudioContext();
+      this.analyser = audioContext.createAnalyser();
+      this.analyser.connect(audioContext.destination);
+      const source = audioContext.createMediaElementSource(this.audio);
+
+      this.audio.addEventListener("canplaythrough", () => {
+        console.log(this.audio)
+        source.connect(this.analyser);
+        duration = this.audio.duration;
+        this.audio.play()
+      });
+    },
+    getDataFromAudio(){
+      //this.analyser.fftSize = 2048;
+      var freqByteData = new Uint8Array(this.analyser.fftSize/2);
+      var timeByteData = new Uint8Array(this.analyser.fftSize/2);
+      this.analyser.getByteFrequencyData(freqByteData);
+      this.analyser.getByteTimeDomainData(timeByteData);
+      return {f:freqByteData, t:timeByteData}; // array of all 1024 levels
     }
   }
 }

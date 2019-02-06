@@ -16,7 +16,7 @@
 
 import Header from '@/components/Header.vue';
 import Render from '@/components/Render.vue';
-import RenderWEBGL from '@/components/RenderWEBGL.vue';
+// import RenderWEBGL from '@/components/RenderWEBGL.vue';
 import Form from '@/components/Form.vue';
 
 
@@ -25,7 +25,7 @@ export default {
   components: {
     Header,
     Render,
-    RenderWebgl: RenderWEBGL,
+    // RenderWebgl: RenderWEBGL,
     Form
   }
 }
