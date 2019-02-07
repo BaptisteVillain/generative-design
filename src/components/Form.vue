@@ -123,6 +123,13 @@ export default {
   #form {
     padding-left: 150px;
     height: 700px;
+    margin-top: 0;
+    margin-bottom: auto;
+    @media screen and (max-width: 760px){
+      padding-left: 0;
+      height: auto;
+      padding: 70px 20px 50px 20px;
+    }
     .form-step {
       min-width: 470px;
       height: 100%;

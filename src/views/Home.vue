@@ -23,15 +23,14 @@ export default {
 <style lang="scss">
 .home {
   width: 100%;
-  height: calc(100vh - 80px);
+  min-height: 700px;
   max-width: 1120px;
   margin: 100px auto 0 auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  #form {
-    margin-top: 0;
-    margin-bottom: auto;
+  @media screen and (max-width: 760px){
+    flex-direction: column;
   }
 }
 </style>
