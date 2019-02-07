@@ -49,47 +49,83 @@ export default {
       data: {},
       form: [
         {
-          question: 'Are you either Dark Jaden Smith or Soft Jaden Smith ?',
+          question: 'Which side of Jaden do you prefer ?',
           slug: 'background',
           selected: 0,
           select: [
             {
-              label: 'Dark',
+              label: 'Dark side',
             },
             {
-              label: 'Soft',
+              label: 'Soft side',
             }
           ]
         },
         {
-          question: 'Are you either Dark Jaden Smith or Soft Jaden Smith ?',
-          slug: 'background2',
-          selected: 2,
+          question: 'Which song from the album SYRE is your favorite ?',
+          slug: 'background',
+          selected: 0,
           select: [
             {
-              label: 'Dark',
+              label: 'Icon',
+              url: require('@/assets/music/Jaden Smith - Icon.mp3'),
+              playing: true,
             },
             {
-              label: 'Soft',
+              label: 'Batman',
+              url: require('@/assets/music/Jaden Smith - Batman.mp3'),
+              playing: false,
             },
             {
-              label: 'Soft',
+              label: 'Watch me',
+              url: require('@/assets/music/Jaden Smith - Watch Me.mp3'),
+              playing: false,
+            },
+            {
+              label: 'Plastic',
+              url: require('@/assets/music/Jaden Smith - Plastic.mp3'),
+              playing: false,
             }
           ]
         },
         {
-          question: 'Are you either Dark Jaden Smith or Soft Jaden Smith ?',
-          slug: 'background3',
-          selected: 1,
+          question: 'Which lyrics have the most meaning for you ?',
+          slug: 'background',
+          selected: 0,
           select: [
             {
-              label: 'Dark',
+              label: '“And girl I hope you know that no society or a cult \rCan take me away from you, you\'re the orange juice to my pulp”',
             },
             {
-              label: 'Soft',
+              label: '“Continental drift, and the next pole shift \rI ain\'t worried bout the science I\'m just glad we coexist”',
             },
             {
-              label: 'Soft',
+              label: '“All your verses sound like dirty dishes \rI\'m about to clean them in the kitchen”',
+            },
+            {
+              label: '“My head is in peace, says look at the height that we reached \rWe\'re like some whales but we should tan on a beach”'
+            }
+          ]
+        },
+        {
+          question: 'Which artist is a perfect match with Jaden ?',
+          slug: 'background',
+          selected: 0,
+          select: [
+            {
+              label: 'A$AP Rocky',
+            },
+            {
+              label: 'Aminé',
+            },
+            {
+              label: 'Kid Cudi',
+            },
+            {
+              label: 'Tyler The Creator',
+            },
+            {
+              label: 'Pharell',
             }
           ]
         },

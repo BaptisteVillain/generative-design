@@ -25,7 +25,7 @@ export default {
   width: 100%;
   min-height: 700px;
   max-width: 1120px;
-  margin: 100px auto 0 auto;
+  margin: 100px auto 100px auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

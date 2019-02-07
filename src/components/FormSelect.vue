@@ -44,6 +44,7 @@ export default {
     .radio {
       width: 30px;
       height: 30px;
+      min-width: 30px;
       border: 2px solid rgba(#ffffff, .8);
       border-radius: 50%;
       cursor: pointer;
