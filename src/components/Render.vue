@@ -1,11 +1,12 @@
 <template>
-  <div id="render">
+  <div ref="render" id="render">
     <canvas ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
 
+import * as PIXI from 'pixi.js'
 import {mapState} from 'vuex';
 
 export default {
@@ -38,16 +39,19 @@ export default {
     'data'
   ]),
   mounted() {
-    this.context = this.$refs.canvas.getContext('2d');
+    // this.context = this.$refs.canvas.getContext('2d');
 
-    this.image = new Image();
-    this.image.addEventListener('load', () => {
-      this.setup();
-      // this.setupBackground();
-      this.animation = requestAnimationFrame(this.render);
-    })
+    // this.image = new Image();
+    // this.image.addEventListener('load', () => {
+    //   this.setup();
+    //   this.setupBackground();
+    //   this.animation = requestAnimationFrame(this.render);
+    // })
 
-    this.image.src = require('@/assets/img/background.png');
+    this.setup();
+    this.pixiInit()
+
+    // this.image.src = require('@/assets/img/background-2.jpg');
   },
   methods: {
     async setup() {
@@ -62,10 +66,9 @@ export default {
       
       this.context.clearRect(0, 0, this.size.width, this.size.height);
 
-      let audioData = this.getDataFromAudio()
-      // this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
-      this.drawStaticBackground();
-      this.textVolume(Math.round(audioData.t[0]/40)-2)
+      let data = this.getDataFromAudio()
+      // this.drawBackground(data);
+      this.textVolume(Math.round(data.t[0]/40)-2)
       this.textStatic()
       
       this.frames++;
@@ -150,8 +153,72 @@ export default {
       this.context.font = "10px Aktiv Grotesk";
       this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
     },
-    drawStaticBackground() {
-      this.context.drawImage(this.image, 0, 0, this.size.width, this.size.height);
+    pixiInit() {
+      var size = [595, 842];
+      var ratio = size[0] / size[1];
+      this.stage = new PIXI.Stage(0x333333, true);
+      this.renderer = PIXI.autoDetectRenderer(size[0], size[1], {antialias: true ,transparent: true, view: this.$refs.canvas});
+      let background = require('@/assets/img/background-2.jpg');
+      let water = require('@/assets/img/filters/water.png')
+
+
+      // our animation speed	
+      this.speed = 0.05;
+        
+      // Append PixiJS to body		
+      this.$refs.render.appendChild(this.renderer.view);
+      
+      this.stage = new PIXI.Container();
+    
+      // get our image background as a texture
+      var texture = PIXI.Texture.fromImage(background);
+      // add it to a sprite
+      var image = new PIXI.Sprite(texture);
+
+      // get our displacement map (image)	
+      this.displacementSprite = PIXI.Sprite.fromImage(water);
+      // set to repeat in a tiled patern
+      this.displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
+    
+
+    
+      // set filter to sprite container
+      var displacementFilter = new PIXI.filters.DisplacementFilter(this.displacementSprite);
+    
+      // Add our filter and sprites to stage	
+      this.stage.filters = [displacementFilter];
+      this.stage.addChild(this.displacementSprite);
+      this.stage.addChild(image);
+
+      // Resize image
+      var containerWidth = size[0];
+      var containerHeight = size[1];
+      var imageRatio = image.width / image.height;
+      var containerRatio = containerWidth / containerHeight;
+
+      if(containerRatio > imageRatio) {
+        image.height = image.height / (image.width / containerWidth);
+        image.width = containerWidth;
+        image.position.x = 0;
+        image.position.y = (containerHeight - image.height) / 2;
+      }else{
+        image.width = image.width / (image.height / containerHeight);
+        image.height = containerHeight;
+        image.position.y = 0;
+        image.position.x = (containerWidth - image.width) / 2;
+      }
+
+      this.pixiRender()
+    },
+    pixiRender() {
+      requestAnimationFrame(this.pixiRender);
+
+      let data = this.getDataFromAudio()
+
+      this.displacementSprite.x += this.speed*data.f[0];
+      this.displacementSprite.y += this.speed*data.f[0];
+
+      this.renderer.render(this.stage);
     }
   }
 }

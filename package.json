@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "glslify-loader": "^2.0.0",
+    "pixi.js": "^4.8.5",
     "raw-loader": "^1.0.0",
     "sanitize.css": "^8.0.0",
     "three": "^0.101.1",
