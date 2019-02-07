@@ -20,12 +20,18 @@ export default {
         // width: 595 * window.devicePixelRatio,
         // height: 842 * window.devicePixelRatio
         width: 500 * window.devicePixelRatio,
-        height: 700 * window.devicePixelRatio
+        height: 700 * window.devicePixelRatio,
+        scale: window.devicePixelRatio
       },
       speed: 1,
       pixi: {},
       sound: {},
-      frame: 0
+      frame: 0,
+      covers: [],
+      coverDelta: -10,
+      coverTimeLast: null,
+      coverTimeGap: 200,
+      coversIteration: 10
     }
   },
   computed: mapState([
@@ -77,8 +83,8 @@ export default {
         view: this.$refs.canvas
       });
 
-      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`
-      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`
+      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`;
+      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`;
       
       let background = require('@/assets/img/cover-distorsion.png');
       let water = require('@/assets/img/filters/water2.png')
@@ -88,7 +94,9 @@ export default {
       
       this.pixi.stage = new PIXI.Container();
 
-      this.setBackground(background, water)
+      this.setBackground(background, water);
+
+      this.addCover();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
@@ -109,6 +117,10 @@ export default {
         this.textSound(volume)
       }
 
+      if(this.coversIteration > this.covers.length) {
+        this.createCover();
+      }
+
       this.renderer.render(this.pixi.stage);
 
       this.frame = (this.frame+1)%5
@@ -119,6 +131,7 @@ export default {
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
+      backgroundImage.zOrder = 0;
 
       // get our displacement map (image)	
       this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
@@ -224,12 +237,39 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
+    addCover() {
+      const coversrc = require('@/assets/img/cover.png');
+      const coverTexture = new PIXI.Texture.fromImage(coversrc);
+
+      let cover = new PIXI.Sprite(coverTexture);
+      cover.zOrder = this.covers.length+1;
+
+      cover.width = 300 * this.size.scale;
+      cover.height = 300 * this.size.scale;
+
+      cover.anchor.set(.5);
+      cover.x = (this.size.width/2) + (this.covers.length * this.coverDelta);
+      cover.y = (this.size.height/2) + (this.covers.length * this.coverDelta);
+
+      this.pixi.stage.addChild(cover);
+      this.coverTimeLast = Date.now();
+
+      this.covers.push(cover);
+    },
+    createCover() {
+      if(!this.coverTimeLast) this.coverTimeLast = Date.now();
+      const currentTime = Date.now();
+
+      if(currentTime - this.coverTimeLast > this.coverTimeGap) {
+        this.addCover();
+      }
+    },
 
 
 
     map(num, in_min, in_max, out_min, out_max) {
       return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    }
+    },
   }
 }
 </script>
