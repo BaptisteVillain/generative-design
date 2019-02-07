@@ -6,9 +6,11 @@
           v-for="index in 6"
           :key="index"
           :style="{'transform': `translate(${index*5}px, -${index*5}px)`, 'z-index': index*-1}"
-          >0{{step+1}}.</span>
+          >
+          {{currentStep.title || `0${step}.`}}
+          </span>
         <span>
-          0{{step+1}}.
+          {{currentStep.title || `0${step}.`}}
         </span>
       </div>
       <div class="step-body">
@@ -26,7 +28,7 @@
 
       <div class="step-footer">
         <button v-if="step > 0" @click.prevent="step--">Previous</button>
-        <button v-if="step < form.length - 1" @click.prevent="step++">Next</button>
+        <button v-if="step < form.length - 1" @click.prevent="step++">{{currentStep.nextContent || 'next'}}</button>
       </div>
     </div>
 </div>
@@ -48,6 +50,13 @@ export default {
       step: 0,
       data: {},
       form: [
+        {
+          title: 'Start.',
+          question: 'Activate your volume to fully enjoy the experience',
+          nextContent: 'Create your poster',
+          select: [],
+          selected: 0,
+        },
         {
           question: 'Which side of Jaden do you prefer ?',
           slug: 'backgroundColor',
@@ -135,7 +144,9 @@ export default {
   computed: {
     currentStep: function () {
       const current = this.form[this.step];
-      this.data[current.slug] = current.select[current.selected].label;
+      if(current.slug) {
+        this.data[current.slug] = current.select[current.selected].label;
+      }
 
       this.$store.commit('setData', this.data);
       this.$store.commit('setUpdate');
@@ -188,6 +199,7 @@ export default {
         position: relative;
         z-index: 10;
         line-height: 90px;
+        white-space: nowrap;
         span::selection {
           background: rgba(#ffffff, .98);
           color: #000000;
