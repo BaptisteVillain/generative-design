@@ -63,8 +63,8 @@ export default {
         },
         {
           question: 'Are you either Dark Jaden Smith or Soft Jaden Smith ?',
-          slug: 'background',
-          selected: 0,
+          slug: 'background2',
+          selected: 2,
           select: [
             {
               label: 'Dark',
@@ -79,8 +79,8 @@ export default {
         },
         {
           question: 'Are you either Dark Jaden Smith or Soft Jaden Smith ?',
-          slug: 'background',
-          selected: 0,
+          slug: 'background3',
+          selected: 1,
           select: [
             {
               label: 'Dark',
@@ -97,22 +97,29 @@ export default {
     }
   },
   computed: {
-    currentStep: function (params) {
-      return this.form[this.step] || null;
+    currentStep: function () {
+      const current = this.form[this.step];
+      this.data[current.slug] = current.select[current.selected].label;
+
+      return current || null;
     }
   },
   watch: {
     step: function () {
       this.$store.commit('setData', this.data);
+      this.$store.commit('setUpdate');
     },
     data: function () {
       this.$store.commit('setData', this.data);
+      this.$store.commit('setUpdate');
     }
   },
   methods:{
     onSelect(key, value, index) {
       this.data[key] = value
       this.form[this.step].selected = index; 
+      this.$store.commit('setData', this.data);
+      this.$store.commit('setUpdate');
     }
   }
 }

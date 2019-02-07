@@ -7,7 +7,7 @@
 <script>
 
 import * as PIXI from 'pixi.js'
-import {mapState} from 'vuex';
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'Render',
@@ -17,8 +17,6 @@ export default {
   data() {
     return {
       size: {
-        // width: 595 * window.devicePixelRatio,
-        // height: 842 * window.devicePixelRatio
         width: 500 * window.devicePixelRatio,
         height: 700 * window.devicePixelRatio,
         scale: window.devicePixelRatio
@@ -31,12 +29,26 @@ export default {
       coverDelta: -10,
       coverTimeLast: null,
       coverTimeGap: 200,
-      coversIteration: 10
+      coversIteration: 10,
     }
   },
-  computed: mapState([
-    'data'
-  ]),
+  computed: mapGetters({
+    data: 'getData',
+    update: 'getUpdate'
+  }),
+  watch: {
+    'update': function() {
+      console.log(this.data);
+      if(this.data.background) {
+        if(this.data.background === 'Dark') {
+          
+        }
+        else if(this.data.background === 'Soft') {
+
+        }
+      }
+    }
+  },
   mounted() {
     this.soundSetup()
     this.pixiInit()
@@ -76,27 +88,21 @@ export default {
     },
     pixiInit() {
       const ratio = this.size.width / this.size.height;
-      const scale = window.devicePixelRatio;
       this.renderer = PIXI.autoDetectRenderer(this.size.width, this.size.height, {
         antialias: true,
         transparent: true,
         view: this.$refs.canvas
       });
 
-      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`;
-      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`;
-      
-      let background = require('@/assets/img/cover-distorsion.png');
-      let water = require('@/assets/img/filters/water2.png')
+      this.$refs.canvas.style.width = `${this.size.width/this.size.scale}px`;
+      this.$refs.canvas.style.height = `${this.size.height/this.size.scale}px`;
         
       // Append PixiJS to body		
       this.$refs.render.appendChild(this.renderer.view);
       
       this.pixi.stage = new PIXI.Container();
 
-      this.setBackground(background, water);
-
-      this.addCover();
+      this.setBackground();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
@@ -117,15 +123,16 @@ export default {
         this.textSound(volume)
       }
 
-      if(this.coversIteration > this.covers.length) {
-        this.createCover();
-      }
+      this.createCover();
 
       this.renderer.render(this.pixi.stage);
 
       this.frame = (this.frame+1)%5
     },
-    setBackground(backgroundImageSrc, filterImageSrc) {
+    setBackground() {
+      let backgroundImageSrc = require('@/assets/img/background.png');
+      let filterImageSrc = require('@/assets/img/filters/water.png');
+
       const backgroundContainer = new PIXI.Container();
       // get our image background as a texture
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
@@ -237,6 +244,10 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
+    setCover() {
+      this.coverContainer = new PIXI.Container();
+      this.pixi.stage.addChild(this.coverContainer);
+    },
     addCover() {
       const coversrc = require('@/assets/img/cover.png');
       const coverTexture = new PIXI.Texture.fromImage(coversrc);
@@ -251,7 +262,7 @@ export default {
       cover.x = (this.size.width/2) + (this.covers.length * this.coverDelta);
       cover.y = (this.size.height/2) + (this.covers.length * this.coverDelta);
 
-      this.pixi.stage.addChild(cover);
+      this.coverContainer.addChild(cover);
       this.coverTimeLast = Date.now();
 
       this.covers.push(cover);
@@ -260,7 +271,7 @@ export default {
       if(!this.coverTimeLast) this.coverTimeLast = Date.now();
       const currentTime = Date.now();
 
-      if(currentTime - this.coverTimeLast > this.coverTimeGap) {
+      if(this.coverContainer && this.coversIteration > this.covers.length && currentTime - this.coverTimeLast > this.coverTimeGap) {
         this.addCover();
       }
     },

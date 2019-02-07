@@ -5,11 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    data: null
+    data: {},
+    update: Date.now()
+  },
+  getters: {
+    getData: state => {
+      return state.data;
+    },
+    getUpdate: state => {
+      return state.update;
+    }
   },
   mutations: {
     setData(state, data) {
       state.data = data
+    },
+    setUpdate(state) {
+      state.update = Date.now();
     }
-  }
+  },
 })
