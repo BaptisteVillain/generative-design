@@ -42,16 +42,16 @@ export default {
       console.log(this.data);
       if(this.data.backgroundColor) {
         if(this.data.backgroundColor === 'Dark side') {
-          this.setCover();
+          this.setBackground(require('@/assets/img/cover-distorsion-dark.png'));
         }
         else if(this.data.backgroundColor === 'Soft side') {
-          this.setCover();
+          this.setBackground(require('@/assets/img/cover-distorsion.png'));
         }
       }
     },
   },
   mounted() {
-    this.soundSetup()
+    // this.soundSetup()
     this.pixiInit()
     this.pixiRender()
   },
@@ -103,60 +103,64 @@ export default {
       
       this.pixi.stage = new PIXI.Container();
 
-      this.setBackground();
+      // this.setBackground();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
 
       this.textStatic()
 
-      let frequency = 0
-      let volume = 0
-      if(this.sound.audio) {
-        let dataSound = this.getDataFromAudio()
-        frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
-        volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
-      }
+      // let frequency = 0
+      // let volume = 0
+      // if(this.sound.audio) {
+      //   let dataSound = this.getDataFromAudio()
+      //   frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
+      //   volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
+      // }
       
-      this.moveBackground(frequency)
+      // this.moveBackground(frequency)
 
-      if(this.frame == 0) {
-        this.textSound(volume)
-      }
+      // if(this.frame == 0) {
+      //   this.textSound(volume)
+      // }
 
-      this.createCover();
+      // this.createCover();
       
 
       this.renderer.render(this.pixi.stage);
 
       this.frame = (this.frame+1)%5
     },
-    setBackground() {
-      let backgroundImageSrc = require('@/assets/img/background.png');
-      let filterImageSrc = require('@/assets/img/filters/water.png');
+    setBackground(backgroundImageSrc) {
+      if(this.pixi.backgroundContainer) {
+        console.log('destroy')
+        this.pixi.backgroundContainer.destroy(true)
+      }
 
-      const backgroundContainer = new PIXI.Container();
+      // let filterImageSrc = require('@/assets/img/filters/water.png');
+
+      this.pixi.backgroundContainer = new PIXI.Container();
       // get our image background as a texture
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
 
       // get our displacement map (image)	
-      this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
-      // set to repeat in a tiled patern
-      this.pixi.filter.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
+      // this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
+      // // set to repeat in a tiled patern
+      // this.pixi.filter.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
     
-      // set filter to sprite container
-      const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
+      // // set filter to sprite container
+      // const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
     
-      // Add our filter and sprites to stage	
-      backgroundContainer.filters = [displacementFilter];
-      backgroundContainer.addChild(this.pixi.filter);
-      backgroundContainer.addChild(backgroundImage);
+      // // Add our filter and sprites to stage	
+      // backgroundContainer.filters = [displacementFilter];
+      // backgroundContainer.addChild(this.pixi.filter);
+      this.pixi.backgroundContainer.addChild(backgroundImage);
 
       this.resizeBackground(backgroundImage)
 
-      this.pixi.stage.addChild(backgroundContainer)
+      this.pixi.stage.addChild(this.pixi.backgroundContainer)
     },
     resizeBackground(backgroundImage) {
       // Resize image
@@ -200,9 +204,9 @@ export default {
         let text = new PIXI.Text('ERYS', style);
         text.x = 263*2;
         if (i) {
-          text.y = (70*2*i)-64*this.size.scale;
+          text.y = (55*2*i)-64*this.size.scale;
         } else {
-          text.y = (70*2)-64*this.size.scale;
+          text.y = (55*2)-64*this.size.scale;
         }
 
         this.pixi.textContainer.addChild(text)
