@@ -19,8 +19,8 @@ export default {
       size: {
         // width: 595,
         // height: 842,
-        width: 500,
-        height: 700
+        width: 500 * window.devicePixelRatio,
+        height: 700 * window.devicePixelRatio
       },
       speed: 1,
       pixi: {},
@@ -68,9 +68,17 @@ export default {
     },
     pixiInit() {
       const ratio = this.size.width / this.size.height;
-      this.renderer = PIXI.autoDetectRenderer(this.size.width, this.size.height, {antialias: true ,transparent: true, view: this.$refs.canvas});
+      const scale = window.devicePixelRatio;
+      this.renderer = PIXI.autoDetectRenderer(this.size.width, this.size.height, {
+        antialias: true,
+        transparent: true,
+        view: this.$refs.canvas
+      });
+
+      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`
+      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`
       
-      let background = require('@/assets/img/background.jpg');
+      let background = require('@/assets/img/background.png');
       let water = require('@/assets/img/filters/water.png')
         
       // Append PixiJS to body		
