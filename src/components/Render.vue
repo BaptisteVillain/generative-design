@@ -20,11 +20,17 @@ export default {
         // width: 595,
         // height: 842,
         width: 500 * window.devicePixelRatio,
-        height: 700 * window.devicePixelRatio
+        height: 700 * window.devicePixelRatio,
+        scale: window.devicePixelRatio
       },
       speed: 1,
       pixi: {},
-      sound: {}
+      sound: {},
+      covers: [],
+      coverDelta: -10,
+      coverTimeLast: null,
+      coverTimeGap: 200,
+      coversIteration: 10
     }
   },
   computed: mapState([
@@ -75,8 +81,8 @@ export default {
         view: this.$refs.canvas
       });
 
-      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`
-      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`
+      this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`;
+      this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`;
       
       let background = require('@/assets/img/background.png');
       let water = require('@/assets/img/filters/water.png')
@@ -86,7 +92,9 @@ export default {
       
       this.pixi.stage = new PIXI.Container();
 
-      this.setBackground(background, water)
+      this.setBackground(background, water);
+
+      this.addCover();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
@@ -94,6 +102,10 @@ export default {
       // let data = this.getDataFromAudio()
 
       this.moveBackground()
+
+      if(this.coversIteration > this.covers.length) {
+        this.createCover();
+      }
 
       this.renderer.render(this.pixi.stage);
     },
@@ -103,6 +115,7 @@ export default {
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
+      backgroundImage.zOrder = 0;
 
       // get our displacement map (image)	
       this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
@@ -144,6 +157,33 @@ export default {
       if(this.pixi.filter) {
       this.pixi.filter.x += this.speed;
       this.pixi.filter.y += this.speed;
+      }
+    },
+    addCover() {
+      const coversrc = require('@/assets/img/cover.png');
+      const coverTexture = new PIXI.Texture.fromImage(coversrc);
+
+      let cover = new PIXI.Sprite(coverTexture);
+      cover.zOrder = this.covers.length+1;
+
+      cover.width = 300 * this.size.scale;
+      cover.height = 300 * this.size.scale;
+
+      cover.anchor.set(.5);
+      cover.x = (this.size.width/2) + (this.covers.length * this.coverDelta);
+      cover.y = (this.size.height/2) + (this.covers.length * this.coverDelta);
+
+      this.pixi.stage.addChild(cover);
+      this.coverTimeLast = Date.now();
+
+      this.covers.push(cover);
+    },
+    createCover() {
+      if(!this.coverTimeLast) this.coverTimeLast = Date.now();
+      const currentTime = Date.now();
+
+      if(currentTime - this.coverTimeLast > this.coverTimeGap) {
+        this.addCover();
       }
     }
   }
