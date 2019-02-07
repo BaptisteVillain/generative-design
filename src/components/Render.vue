@@ -6,8 +6,8 @@
 
 <script>
 
-// import VueP5 from 'vue-p5';
 import * as PIXI from 'pixi.js'
+import {mapState} from 'vuex';
 
 export default {
   name: 'Render',
@@ -17,8 +17,10 @@ export default {
   data() {
     return {
       size: {
-        width: 595,
-        height: 842,
+        // width: 595,
+        // height: 842,
+        width: 500,
+        height: 700
       },
       context: null,
       amplitude: 100,
@@ -33,6 +35,9 @@ export default {
       audio: null,
     }
   },
+  computed: mapState([
+    'data'
+  ]),
   mounted() {
     // this.context = this.$refs.canvas.getContext('2d');
 
@@ -78,12 +83,13 @@ export default {
         this.pixels[i] = source.data[i];
         this.result.data[i] = 255;
       }
+
+      this.drawBackground();
     },
     drawBackground(data) {
-      const T = this.frames * this.interval * .6 / (1000-data.f[0]);
+      const T = this.frames * this.interval * 2 / (1000-data.f[0]);
       let xs;
       let ys;
-      // console.log(data)
 
       for (let x = this.amplitude; x < this.size.width - this.amplitude; ++x) {
         ys = this.amplitude * Math.cos(2 * Math.PI * (3 * x / this.size.width + T));
@@ -134,17 +140,17 @@ export default {
     },
     textVolume(volume) {
       for (let i = 1; i <= volume; i++) {
-        this.context.font = "92px Arial";
-        this.context.fillStyle = "red";
+        this.context.font = "92px Aktiv Grotesk";
+        this.context.fillStyle = "white";
         this.context.fillText("ERYS", 263, (70*i));
       }
     },
     textStatic() {
-      this.context.font = "12px Arial";
-      this.context.fillStyle = "blue";
+      this.context.font = "12px Aktiv Grotesk";
+      this.context.fillStyle = "white";
       this.context.fillText("JADEN SMITH - ERYS", 50, 40);
       this.context.fillText("24.02.19", 50, 58);
-      this.context.font = "10px Arial";
+      this.context.font = "10px Aktiv Grotesk";
       this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
     },
     pixiInit() {
@@ -219,10 +225,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #render {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
+  // #render {
+  //   width: 100%;
+  //   height: 100%;
+  //   display: flex;
+  //   align-items: center;
+  // }
 </style>

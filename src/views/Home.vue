@@ -1,45 +1,36 @@
 <template>
   <div class="home">
-    <Header/>
-    <div class="container">
-      <div class="wrapper">
-        <render/>
-        <Form/>
-      </div>
-      <!-- <render-webgl/> -->
-    </div>
-
+    <render/>
+    <app-form/>
   </div>
 </template>
 
 <script>
 
-import Header from '@/components/Header.vue';
 import Render from '@/components/Render.vue';
-// import RenderWEBGL from '@/components/RenderWEBGL.vue';
 import Form from '@/components/Form.vue';
 
 
 export default {
   name: 'home',
   components: {
-    Header,
     Render,
-    // RenderWebgl: RenderWEBGL,
-    Form
+    AppForm: Form
   }
 }
 </script>
 
 <style lang="scss">
-.home{
-  background-color: $black;
-  height: 100vh;
-  color: #fff;
-}
-
-.wrapper{
+.home {
+  width: 100%;
+  min-height: 700px;
+  max-width: 1120px;
+  margin: 100px auto 0 auto;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  @media screen and (max-width: 760px){
+    flex-direction: column;
+  }
 }
 </style>

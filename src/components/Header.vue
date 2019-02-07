@@ -16,14 +16,18 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 header{
-  padding: 33px 0;
+  height: 80px;
 }
 .container{
-  width: 85%;
+  width: 100%;
+  height: 100%;
+  max-width: 1120px;
   margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
 }
 </style>
 
