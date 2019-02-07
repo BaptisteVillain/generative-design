@@ -16,6 +16,13 @@ export default {
 </script>
 
 <style lang="scss">
+@font-face {
+  font-family: 'Aktiv Grotesk';
+  src: url('~@/assets/fonts/AktivGrotesk-Light.woff2') format('woff2'),
+    url('~@/assets/fonts/AktivGrotesk-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
 
 @font-face {
   font-family: 'Aktiv Grotesk';
@@ -30,6 +37,14 @@ export default {
   src: url('~@/assets/fonts/AktivGrotesk-Bold.woff2') format('woff2'),
     url('~@/assets/fonts/AktivGrotesk-Bold.woff') format('woff');
   font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Druk Wide';
+  src: url('~@/assets/fonts/DrukWide.woff2') format('woff2'),
+    url('~@/assets/fonts/DrukWide.woff') format('woff');
+  font-weight: 900;
   font-style: normal;
 }
 
