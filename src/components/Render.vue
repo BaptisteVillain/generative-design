@@ -17,20 +17,22 @@ export default {
   data() {
     return {
       size: {
-        // width: 595,
-        // height: 842,
+        // width: 595 * window.devicePixelRatio,
+        // height: 842 * window.devicePixelRatio
         width: 500 * window.devicePixelRatio,
         height: 700 * window.devicePixelRatio
       },
       speed: 1,
       pixi: {},
-      sound: {}
+      sound: {},
+      frame: 0
     }
   },
   computed: mapState([
     'data'
   ]),
   mounted() {
+    this.soundSetup()
     this.pixiInit()
     this.pixiRender()
   },
@@ -51,11 +53,11 @@ export default {
       this.sound.audio.addEventListener("canplaythrough", () => {
         console.log(this.sound.audio)
         source.connect(this.sound.analyser);
-        // this.sound.audio.play()
+        this.sound.audio.play()
       });
     },
-    setSound(audioSrc = '@/assets/music/Jaden Smith - Watch Me.mp3') {
-      this.sound.audio.src = require(audioSrc)
+    setSound() {
+      this.sound.audio.src = require('@/assets/music/Jaden Smith - Watch Me.mp3')
       this.sound.audio.load();
     },
     getDataFromAudio(){
@@ -78,8 +80,8 @@ export default {
       this.$refs.canvas.style.width = `${this.size.width/window.devicePixelRatio}px`
       this.$refs.canvas.style.height = `${this.size.height/window.devicePixelRatio}px`
       
-      let background = require('@/assets/img/background.png');
-      let water = require('@/assets/img/filters/water.png')
+      let background = require('@/assets/img/cover-distorsion.png');
+      let water = require('@/assets/img/filters/water2.png')
         
       // Append PixiJS to body		
       this.$refs.render.appendChild(this.renderer.view);
@@ -91,11 +93,25 @@ export default {
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
 
-      // let data = this.getDataFromAudio()
+      this.textStatic()
 
-      this.moveBackground()
+      let frequency = 0
+      let volume = 0
+      if(this.sound.audio) {
+        let dataSound = this.getDataFromAudio()
+        frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
+        volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
+      }
+      
+      this.moveBackground(frequency)
+
+      if(this.frame == 0) {
+        this.textSound(volume)
+      }
 
       this.renderer.render(this.pixi.stage);
+
+      this.frame = (this.frame+1)%5
     },
     setBackground(backgroundImageSrc, filterImageSrc) {
       const backgroundContainer = new PIXI.Container();
@@ -140,11 +156,79 @@ export default {
         backgroundImage.position.x = (containerWidth - backgroundImage.width) / 2;
       }
     },
-    moveBackground() {
+    moveBackground(volume) {
       if(this.pixi.filter) {
-      this.pixi.filter.x += this.speed;
-      this.pixi.filter.y += this.speed;
+        this.pixi.filter.x += this.speed + volume;
+        this.pixi.filter.y += this.speed + volume;
       }
+    },
+    textSound(volume) {
+      if(this.pixi.textContainer) {
+        this.pixi.textContainer.destroy(true)
+      }
+      this.pixi.textContainer = new PIXI.Container();
+
+      for (let i = 0; i <= volume; i++) {
+        const style = new PIXI.TextStyle({
+          fontFamily: 'Aktiv Grotesk',
+          fontSize: 92*2,
+          fontWeight: 'bold',
+          fill: '#fff',
+        });
+
+        let text = new PIXI.Text('ERYS', style);
+        text.x = 263*2;
+        if (i) {
+          text.y = (70*2*i)-90*2;
+        } else {
+          text.y = (70*2)-90*2;
+        }
+
+        this.pixi.textContainer.addChild(text)
+      }
+
+      this.pixi.stage.addChild(this.pixi.textContainer)
+    },
+    textStatic() {
+      if(this.staticTextContainer) {
+        this.staticTextContainer.destroy(true)
+      }
+      this.staticTextContainer = new PIXI.Container();
+
+      const style = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 12*2,
+        fill: '#fff',
+      });
+
+      let text = new PIXI.Text('JADEN SMITH - ERYS', style);
+      text.x = 50*2;
+      text.y = 40*2;
+      this.staticTextContainer.addChild(text)
+
+      text = new PIXI.Text('24.02.19', style);
+      text.x = 50*2;
+      text.y = 58*2;
+      this.staticTextContainer.addChild(text)
+
+      const styleBis = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 10*2,
+        fill: '#fff',
+      });
+
+      text = new PIXI.Text('COPYRIGHT 2019 - JADEN SMITH X YOU', styleBis);
+      text.x = 260*2;
+      text.y = 649*2;
+      this.staticTextContainer.addChild(text)
+
+      this.pixi.stage.addChild(this.staticTextContainer)
+    },
+
+
+
+    map(num, in_min, in_max, out_min, out_max) {
+      return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
   }
 }
