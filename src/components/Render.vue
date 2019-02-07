@@ -154,11 +154,11 @@ export default {
       this.context.fillText("COPYRIGHT 2019 - JADEN SMITH X YOU", 355, 791);
     },
     pixiInit() {
-      var size = [595, 842];
+      var size = [this.size.width, this.size.height];
       var ratio = size[0] / size[1];
       this.stage = new PIXI.Stage(0x333333, true);
       this.renderer = PIXI.autoDetectRenderer(size[0], size[1], {antialias: true ,transparent: true, view: this.$refs.canvas});
-      let background = require('@/assets/img/background-2.jpg');
+      let background = require('@/assets/img/background.jpg');
       let water = require('@/assets/img/filters/water.png')
 
 
