@@ -26,9 +26,10 @@ export default {
       sound: {},
       frame: 0,
       covers: [],
-      coverDelta: -10,
+      coverDeltaX: -30,
+      coverDeltaY: -30,
       coverTimeLast: null,
-      coverTimeGap: 200,
+      coverTimeGap: 50,
       coversIteration: 10,
     }
   },
@@ -41,13 +42,13 @@ export default {
       console.log(this.data);
       if(this.data.background) {
         if(this.data.background === 'Dark') {
-          
+          this.setCover();
         }
         else if(this.data.background === 'Soft') {
-
+          this.setCover();
         }
       }
-    }
+    },
   },
   mounted() {
     this.soundSetup()
@@ -124,6 +125,7 @@ export default {
       }
 
       this.createCover();
+      
 
       this.renderer.render(this.pixi.stage);
 
@@ -138,7 +140,6 @@ export default {
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
-      backgroundImage.zOrder = 0;
 
       // get our displacement map (image)	
       this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
@@ -190,18 +191,18 @@ export default {
 
       for (let i = 0; i <= volume; i++) {
         const style = new PIXI.TextStyle({
-          fontFamily: 'Aktiv Grotesk',
-          fontSize: 92*2,
-          fontWeight: 'bold',
+          fontFamily: 'Druk Wide',
+          fontSize: 64*this.size.scale,
+          fontWeight: '900',
           fill: '#fff',
         });
 
         let text = new PIXI.Text('ERYS', style);
         text.x = 263*2;
         if (i) {
-          text.y = (70*2*i)-90*2;
+          text.y = (70*2*i)-64*this.size.scale;
         } else {
-          text.y = (70*2)-90*2;
+          text.y = (70*2)-64*this.size.scale;
         }
 
         this.pixi.textContainer.addChild(text)
@@ -253,14 +254,14 @@ export default {
       const coverTexture = new PIXI.Texture.fromImage(coversrc);
 
       let cover = new PIXI.Sprite(coverTexture);
-      cover.zOrder = this.covers.length+1;
+      // cover.blendMode = PIXI.BLEND_MODES.LIGTHEN;
 
       cover.width = 300 * this.size.scale;
       cover.height = 300 * this.size.scale;
 
       cover.anchor.set(.5);
-      cover.x = (this.size.width/2) + (this.covers.length * this.coverDelta);
-      cover.y = (this.size.height/2) + (this.covers.length * this.coverDelta);
+      cover.x = (this.size.width/2) + (this.covers.length * this.coverDeltaX);
+      cover.y = (this.size.height/2) + (this.covers.length * this.coverDeltaY);
 
       this.coverContainer.addChild(cover);
       this.coverTimeLast = Date.now();

@@ -101,6 +101,9 @@ export default {
       const current = this.form[this.step];
       this.data[current.slug] = current.select[current.selected].label;
 
+      this.$store.commit('setData', this.data);
+      this.$store.commit('setUpdate');
+
       return current || null;
     }
   },
