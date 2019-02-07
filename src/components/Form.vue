@@ -50,7 +50,7 @@ export default {
       form: [
         {
           question: 'Which side of Jaden do you prefer ?',
-          slug: 'background',
+          slug: 'backgroundColor',
           selected: 0,
           select: [
             {
@@ -63,7 +63,7 @@ export default {
         },
         {
           question: 'Which song from the album SYRE is your favorite ?',
-          slug: 'background',
+          slug: 'backgroundFilter',
           selected: 0,
           select: [
             {
@@ -90,7 +90,7 @@ export default {
         },
         {
           question: 'Which lyrics have the most meaning for you ?',
-          slug: 'background',
+          slug: 'lyrics',
           selected: 0,
           select: [
             {
@@ -109,7 +109,7 @@ export default {
         },
         {
           question: 'Which artist is a perfect match with Jaden ?',
-          slug: 'background',
+          slug: 'cover',
           selected: 0,
           select: [
             {

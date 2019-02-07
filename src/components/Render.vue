@@ -40,11 +40,11 @@ export default {
   watch: {
     'update': function() {
       console.log(this.data);
-      if(this.data.background) {
-        if(this.data.background === 'Dark') {
+      if(this.data.backgroundColor) {
+        if(this.data.backgroundColor === 'Dark side') {
           this.setCover();
         }
-        else if(this.data.background === 'Soft') {
+        else if(this.data.backgroundColor === 'Soft side') {
           this.setCover();
         }
       }
