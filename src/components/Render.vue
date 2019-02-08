@@ -378,7 +378,17 @@ export default {
         const sprite = new PIXI.Sprite(coverTexture);
 
         sprite.anchor.set(.5);
-        sprite.alpha = .7;
+
+        if(this.data.backgroundColor === 'Soft side') {
+          sprite.alpha = .7;
+        }
+        else {
+          const colorMatrixDesaturate = new PIXI.filters.ColorMatrixFilter();
+          const colorMatrixContrast = new PIXI.filters.ColorMatrixFilter();
+          this.pixi.coverContainer.filters = [colorMatrixDesaturate, colorMatrixContrast];
+          colorMatrixDesaturate.desaturate();
+          colorMatrixContrast.contrast(0.5)
+        }
         
         sprite.width = 300 * this.size.scale;
         sprite.height = 300 * this.size.scale;
