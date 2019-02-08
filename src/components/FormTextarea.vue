@@ -1,6 +1,6 @@
 <template>
   <div class="form-textarea">
-    <textarea v-model="textareaContent" class="textarea" :placeholder="textareaInit" ></textarea>
+    <input v-model="textareaContent" class="textarea" :placeholder="textareaInit" />
     <div class="textarea-border-top"></div>
     <div class="textarea-border-bottom"></div>
   </div>
@@ -13,7 +13,7 @@ export default {
   data(){
     return{
       textareaInit: 'Be a YES Man',
-      textareaContent: this.value
+      textareaContent: ''
     }
   },
   watch:{
@@ -34,9 +34,10 @@ export default {
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.15);
   width: 100%;
-  height: 50px;
+  height: auto;
+  padding: 15px;
   resize: none;
-  line-height: 45px;
+  /* line-height: 45px; */
   transition: border 0.2s ease-in;
 }
 
@@ -56,7 +57,7 @@ export default {
 }
 .textarea-border-bottom{
   position: absolute;
-    bottom: 4px;
+    bottom: 0px;
     right: 0;
     width: 24px;
     height: 24px;
