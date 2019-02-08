@@ -27,7 +27,7 @@
       </div>
 
       <div class="step-footer">
-        <button v-if="step > 0" @click.prevent="step--">Previous</button>
+        <button v-if="step > 0" @click.prevent="onPrevious(currentStep.slug)">Previous</button>
         <button v-if="step < form.length - 1" @click.prevent="step++">{{currentStep.nextContent || 'next'}}</button>
       </div>
     </div>
@@ -170,6 +170,12 @@ export default {
       this.form[this.step].selected = index; 
       this.$store.commit('setData', this.data);
       this.$store.commit('setUpdate');
+    },
+    onPrevious(stepSlug) {
+      this.data[stepSlug] = null
+      this.$store.commit('setData', this.data);
+      this.$store.commit('setUpdate');
+      this.step--
     }
   }
 }

@@ -41,10 +41,28 @@ export default {
   watch: {
     'update': function() {
       console.log(this.data);
-      if(this.data.lyrics) {
-        this.sound.audio.play()
+      if(this.data.cover) {
+        if(this.data.cover === 'A$AP Rocky') {
+          this.setCover(-20, -35, 35, 20);
+        } else if(this.data.cover === 'Aminé') {
+          this.setCover(-10, 10, 20, 15);        
+        } else if(this.data.cover === 'Kid Cudi') {
+          this.setCover(-40, -5, 25, 25);        
+        } else if(this.data.cover === 'Tyler The Creator') {
+          this.setCover(50, 50, 25, 5);      
+        } else if(this.data.cover === 'Pharell') {
+          this.setCover(50, -50, 25, 10);      
+        }
+      }
+      else if(this.data.lyrics) {
+        // this.sound.audio.play()
+        this.coversIteration = 0
+        this.covers = []
       }
       else if(this.data.backgroundFilter) {
+        if(this.pixi.textContainer) {
+          this.pixi.textContainer.destroy(true)
+        }
         if(this.data.backgroundFilter !== this.lastData.backgroundFilter) {
           if(this.data.backgroundFilter === 'Icon') {
             this.setBackgroundFilter(require('@/assets/img/filters/water2.png'))
@@ -65,29 +83,23 @@ export default {
           this.lastData.backgroundFilter = this.data.backgroundFilter
         }
         else {
-          this.pauseSound()
+          // this.pauseSound()
         }
       }
       else if(this.data.backgroundColor) {
-        this.soundSetup()
+        this.lastData.backgroundFilter = null
+        if(!this.sound.audio) {
+          this.soundSetup()
+        }
+        else {
+          this.sound.audio.pause()
+        }
+        
         if(this.data.backgroundColor === 'Dark side') {
           this.setBackground(require('@/assets/img/cover-distorsion-dark.png'));
         }
         else if(this.data.backgroundColor === 'Soft side') {
           this.setBackground(require('@/assets/img/cover-distorsion.png'));
-        }
-      }
-      if(this.data.cover) {
-        if(this.data.cover === 'A$AP Rocky') {
-          this.setCover(-20, -35, 35, 20);
-        } else if(this.data.cover === 'Aminé') {
-          this.setCover(-10, 10, 20, 15);        
-        } else if(this.data.cover === 'Kid Cudi') {
-          this.setCover(-40, -5, 25, 25);        
-        } else if(this.data.cover === 'Tyler The Creator') {
-          this.setCover(50, 50, 25, 5);      
-        } else if(this.data.cover === 'Pharell') {
-          this.setCover(50, -50, 25, 10);      
         }
       }
     },
@@ -169,11 +181,11 @@ export default {
         volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
       }
       
-      if(this.pixi.filter) {
+      if(this.pixi.filter && this.data.backgroundFilter) {
         this.moveBackground(frequency)
       }
 
-      if(this.frame == 0 && this.data.lyrics) {
+      if(this.frame == 0 && this.data.lyrics && !this.data.cover) {
         this.textSound(volume)
       }
 
