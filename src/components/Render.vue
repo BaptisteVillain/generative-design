@@ -56,7 +56,7 @@ export default {
         } else if(this.data.cover === 'Tyler The Creator') {
           this.setCover(50, 50, 25, 5);      
         } else if(this.data.cover === 'Pharell') {
-          this.setCover(50, -50, 25, 10);      
+          this.setCover(5, -5, 25, 15);      
         }
       }
       else if(this.data.lyrics) {
@@ -213,7 +213,7 @@ export default {
 
       this.textStatic();
       if(this.data.lyrics) this.textLyrics();
-      this.textQuote(this.data.quote)
+      if(this.data.quote) this.textQuote(this.data.quote);
 
       this.renderer.render(this.pixi.stage);
 
@@ -318,24 +318,27 @@ export default {
       });
 
       let text = new PIXI.Text('JADEN SMITH - ERYS', style);
-      text.x = 50*2;
-      text.y = 40*2;
+      text.x = 50*this.size.scale;
+      text.y = 40*this.size.scale;
       this.staticTextContainer.addChild(text)
 
       text = new PIXI.Text('24.02.19', style);
-      text.x = 50*2;
-      text.y = 58*2;
+      text.x = 50*this.size.scale;
+      text.y = 58*this.size.scale;
       this.staticTextContainer.addChild(text)
 
       const styleBis = new PIXI.TextStyle({
         fontFamily: 'Aktiv Grotesk',
-        fontSize: 10*2,
+        fontSize: 10*this.size.scale,
         fill: '#fff',
       });
 
       text = new PIXI.Text('COPYRIGHT 2019 - JADEN SMITH X YOU', styleBis);
-      text.x = 260*2;
-      text.y = 649*2;
+      let metrics = PIXI.TextMetrics.measureText('COPYRIGHT 2019 - JADEN SMITH X YOU', style);
+
+      text.anchor.set(1, 0);
+      text.x = this.size.width - 60*this.size.scale;
+      text.y = 649*this.size.scale;
       this.staticTextContainer.addChild(text)
 
       this.pixi.stage.addChild(this.staticTextContainer)
@@ -433,9 +436,12 @@ export default {
         fill: '#fff',
       });
 
-      let text = new PIXI.Text(quote, style);
-      text.x = 260*2;
-      text.y = 659*2;
+      let text = new PIXI.Text(quote.toUpperCase(), style);
+      let metrics = PIXI.TextMetrics.measureText(quote.toUpperCase(), style);
+
+      text.anchor.set(1, 0);
+      text.x = this.size.width - 60*this.size.scale;
+      text.y = 659*this.size.scale;
       this.quoteTextContainer.addChild(text)
 
       this.pixi.stage.addChild(this.quoteTextContainer)
