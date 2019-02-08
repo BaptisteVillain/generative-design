@@ -32,7 +32,7 @@
       </div>
 
       <div class="step-footer">
-        <button v-if="step > 0" @click.prevent="onPrevious(currentStep.slug)">Previous</button>
+        <button v-if="step > 0 && step < form.length - 1" @click.prevent="onPrevious(currentStep.slug)">Previous</button>
         <button v-if="step < form.length - 1" @click.prevent="step++">{{currentStep.nextContent || 'next'}}</button>
       </div>
     </div>
@@ -201,10 +201,7 @@ export default {
       this.step--
     },
     downloadFile() {
-        console.log('hi')
-        const canvas = document.querySelector('canvas')
-        const dataURL = canvas.toDataURL('image/png');
-        this.$refs.button.href = dataURL;
+      this.$store.commit('setDownload');
     }
   }
 }

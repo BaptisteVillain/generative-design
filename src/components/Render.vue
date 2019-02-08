@@ -40,7 +40,8 @@ export default {
   },
   computed: mapGetters({
     data: 'getData',
-    update: 'getUpdate'
+    update: 'getUpdate',
+    download: 'onDownload'
   }),
   watch: {
     'update': function() {
@@ -115,6 +116,9 @@ export default {
         }
       }
     },
+    'download': function() {
+      this.saveCanvas();
+    }
   },
   mounted() {
     this.pixiInit()
@@ -166,7 +170,8 @@ export default {
       this.renderer = PIXI.autoDetectRenderer(this.size.width, this.size.height, {
         antialias: true,
         transparent: true,
-        view: this.$refs.canvas
+        view: this.$refs.canvas,
+        preserveDrawingBuffer: true
       });
 
       this.$refs.canvas.style.width = `${this.size.width/this.size.scale}px`;
@@ -445,9 +450,15 @@ export default {
 
       this.pixi.stage.addChild(this.quoteTextContainer)
     },
-
-
-
+    saveCanvas() {
+      const a = document.createElement('a');
+      a.addEventListener('click', () => {
+        var data = this.renderer.view.toDataURL("image/png", 1);
+        a.href = this.renderer.view.toDataURL("image/png", 1);
+        a.download = 'ERYS.png';
+      })
+      a.click();
+    },
     map(num, in_min, in_max, out_min, out_max) {
       return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     },
