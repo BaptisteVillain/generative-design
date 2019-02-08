@@ -21,7 +21,7 @@ export default {
         height: 700 * window.devicePixelRatio,
         scale: window.devicePixelRatio
       },
-      speed: 1,
+      speed: 0,
       pixi: {},
       sound: {},
       frame: 0,
@@ -31,6 +31,7 @@ export default {
       coverTimeLast: null,
       coverTimeGap: 50,
       coversIteration: 10,
+      lastData: {},
     }
   },
   computed: mapGetters({
@@ -40,7 +41,35 @@ export default {
   watch: {
     'update': function() {
       console.log(this.data);
-      if(this.data.backgroundColor) {
+      if(this.data.lyrics) {
+        this.sound.audio.play()
+      }
+      else if(this.data.backgroundFilter) {
+        if(this.data.backgroundFilter !== this.lastData.backgroundFilter) {
+          if(this.data.backgroundFilter === 'Icon') {
+            this.setBackgroundFilter(require('@/assets/img/filters/water2.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Icon.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Batman') {
+            this.setBackgroundFilter(require('@/assets/img/filters/ice.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Batman.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Watch me') {
+            this.setBackgroundFilter(require('@/assets/img/filters/alien.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Watch Me.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Plastic') {
+            this.setBackgroundFilter(require('@/assets/img/filters/soil.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Plastic.mp3'))
+          }
+          this.lastData.backgroundFilter = this.data.backgroundFilter
+        }
+        else {
+          this.pauseSound()
+        }
+      }
+      else if(this.data.backgroundColor) {
+        this.soundSetup()
         if(this.data.backgroundColor === 'Dark side') {
           this.setBackground(require('@/assets/img/cover-distorsion-dark.png'));
         }
@@ -51,7 +80,6 @@ export default {
     },
   },
   mounted() {
-    // this.soundSetup()
     this.pixiInit()
     this.pixiRender()
   },
@@ -63,7 +91,7 @@ export default {
 
       const audioContext = new AudioContext();
 
-      this.setSound()
+      // this.setSound()
 
       this.sound.analyser = audioContext.createAnalyser();
       this.sound.analyser.connect(audioContext.destination);
@@ -75,9 +103,17 @@ export default {
         this.sound.audio.play()
       });
     },
-    setSound() {
-      this.sound.audio.src = require('@/assets/music/Jaden Smith - Watch Me.mp3')
+    setSound(music) {
+      this.sound.audio.src = music
       this.sound.audio.load();
+    },
+    pauseSound() {
+      if(!this.sound.audio.paused) {
+        this.sound.audio.pause()
+      }
+      else {
+        this.sound.audio.play()
+      }
     },
     getDataFromAudio(){
       //this.sound.analyser.fftSize = 2048;
@@ -110,15 +146,19 @@ export default {
 
       this.textStatic()
 
-      // let frequency = 0
-      // let volume = 0
-      // if(this.sound.audio) {
-      //   let dataSound = this.getDataFromAudio()
-      //   frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
-      //   volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
-      // }
+      let frequency = 0
+      let volume = 0
+      if(this.data.backgroundFilter) {
+        let dataSound = this.getDataFromAudio()
+        if(!this.data.lyrics) {
+          frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
+        }
+        volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
+      }
       
-      // this.moveBackground(frequency)
+      if(this.pixi.filter) {
+        this.moveBackground(frequency)
+      }
 
       // if(this.frame == 0) {
       //   this.textSound(volume)
@@ -137,30 +177,33 @@ export default {
         this.pixi.backgroundContainer.destroy(true)
       }
 
-      // let filterImageSrc = require('@/assets/img/filters/water.png');
-
       this.pixi.backgroundContainer = new PIXI.Container();
       // get our image background as a texture
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
 
-      // get our displacement map (image)	
-      // this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
-      // // set to repeat in a tiled patern
-      // this.pixi.filter.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
-    
-      // // set filter to sprite container
-      // const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
-    
-      // // Add our filter and sprites to stage	
-      // backgroundContainer.filters = [displacementFilter];
-      // backgroundContainer.addChild(this.pixi.filter);
       this.pixi.backgroundContainer.addChild(backgroundImage);
 
       this.resizeBackground(backgroundImage)
 
       this.pixi.stage.addChild(this.pixi.backgroundContainer)
+    },
+    setBackgroundFilter(filterImageSrc) {
+      if(this.pixi.filter) {
+        this.pixi.backgroundContainer.removeChild(this.pixi.filter)
+      }
+      // get our displacement map (image)	
+      this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
+      // set to repeat in a tiled patern
+      this.pixi.filter.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
+    
+      // set filter to sprite container
+      const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
+    
+      // Add our filter and sprites to stage	
+      this.pixi.backgroundContainer.filters = [displacementFilter];
+      this.pixi.backgroundContainer.addChild(this.pixi.filter);
     },
     resizeBackground(backgroundImage) {
       // Resize image
