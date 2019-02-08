@@ -36,6 +36,7 @@ export default {
       }
       .radio-active {
         transform: scale(1);
+        opacity: 1;
       }
       .label {
         color: #ffffff;
@@ -59,6 +60,8 @@ export default {
       background: #ffffff;
       border-radius: 50%;
       transform: scale(0);
+      opacity: 0;
+      transition: opacity .05s, transform .1s cubic-bezier(0.77, 0, 0.175, 1);
     }
     .label {
       margin-left: 22px;
