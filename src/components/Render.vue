@@ -32,6 +32,10 @@ export default {
       coverTimeGap: 200,
       coversIteration: 0,
       lastData: {},
+      lyricsX: 0,
+      lyricsY: 0,
+      lyricsSize: 0,
+      lyricsText: null
     }
   },
   computed: mapGetters({
@@ -40,9 +44,25 @@ export default {
   }),
   watch: {
     'update': function() {
-      console.log(this.data);
-      if(this.data.lyrics) {
-        this.sound.audio.play()
+      if(this.data.cover) {
+        if(this.data.cover === 'A$AP Rocky') {
+          this.setCover(-20, -35, 35, 20);
+        } else if(this.data.cover === 'Aminé') {
+          this.setCover(-10, 10, 20, 15);        
+        } else if(this.data.cover === 'Kid Cudi') {
+          this.setCover(-40, -5, 25, 25);        
+        } else if(this.data.cover === 'Tyler The Creator') {
+          this.setCover(50, 50, 25, 5);      
+        } else if(this.data.cover === 'Pharell') {
+          this.setCover(50, -50, 25, 10);      
+        }
+      }
+      else if(this.data.lyrics) {
+        this.sound.audio.play();
+        const size = 1 + Math.random() * 4;
+        const dx = (50 + Math.random() * 100) * Math.round(Math.random()) * 2 - 1;
+        const dy = (50 + Math.random() * 200) * Math.round(Math.random()) * 2 - 1;
+        this.setTextLyrics(this.data.lyrics, size, dx, dy);
       }
       else if(this.data.backgroundFilter) {
         if(this.data.backgroundFilter !== this.lastData.backgroundFilter) {
@@ -75,19 +95,6 @@ export default {
         }
         else if(this.data.backgroundColor === 'Soft side') {
           this.setBackground(require('@/assets/img/cover-distorsion.png'));
-        }
-      }
-      if(this.data.cover) {
-        if(this.data.cover === 'A$AP Rocky') {
-          this.setCover(-20, -35, 35, 20);
-        } else if(this.data.cover === 'Aminé') {
-          this.setCover(-10, 10, 20, 15);        
-        } else if(this.data.cover === 'Kid Cudi') {
-          this.setCover(-40, -5, 25, 25);        
-        } else if(this.data.cover === 'Tyler The Creator') {
-          this.setCover(50, 50, 25, 5);      
-        } else if(this.data.cover === 'Pharell') {
-          this.setCover(50, -50, 25, 10);      
         }
       }
     },
@@ -130,7 +137,7 @@ export default {
       }
     },
     getDataFromAudio(){
-      //this.sound.analyser.fftSize = 2048;
+      this.sound.analyser.fftSize = 2048;
       const freqByteData = new Uint8Array(this.sound.analyser.fftSize/2);
       const timeByteData = new Uint8Array(this.sound.analyser.fftSize/2);
       this.sound.analyser.getByteFrequencyData(freqByteData);
@@ -181,7 +188,7 @@ export default {
       this.drawCovers();
 
       this.textStatic();
-      this.textLyrics();
+      if(this.data.lyrics) this.textLyrics();
 
       this.renderer.render(this.pixi.stage);
 
@@ -308,8 +315,11 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
-    setTextLyrics(text, size, position) {
-
+    setTextLyrics(text, size, dX, dY) {
+      this.lyricsX = dX,
+      this.lyricsY = dY,
+      this.lyricsSize = size,
+      this.lyricsText = text
     },
     textLyrics() {
        if(this.lyricsContainer) {
@@ -319,16 +329,17 @@ export default {
 
       const style = new PIXI.TextStyle({
         fontFamily: 'Aktiv Grotesk',
-        fontSize: 8*this.size.scale,
+        fontSize: 8*this.lyricsSize*this.size.scale,
         fill: '#f0dd00',
         wordWrap: true,
-        wordWrapWidth: 215*this.size.scale,
+        wordWrapWidth: 215*(.5 + this.lyricsSize/2)*this.size.scale,
         align: 'center',
       })
 
-      const text = new PIXI.Text('“Continental drift, and the next pole shift I ain\'t worried bout the science I\'m just glad we coexist”', style);
+      const text = new PIXI.Text(this.lyricsText, style);
       text.anchor.set(.5, 0);
-      text.x = this.size.width/2;
+      text.x = this.size.width/2 + this.lyricsX;
+      text.y = this.size.height/2 + this.lyricsY;
 
       this.lyricsContainer.addChild(text);
       this.pixi.stage.addChild(this.lyricsContainer);
