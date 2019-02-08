@@ -205,7 +205,7 @@ export default {
       padding: 70px 20px 50px 20px;
     }
     .form-step {
-      min-width: 470px;
+      width: 470px;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -241,7 +241,7 @@ export default {
           font-weight: 300;
           opacity: 0.85;
           margin: 0;
-          margin: 30px 0 25px 0;
+          margin: 35px 0 50px 0;
           &::selection {
             background: rgba(#ffffff, .98);
             color: #000000;
