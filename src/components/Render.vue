@@ -208,6 +208,7 @@ export default {
 
       this.textStatic();
       if(this.data.lyrics) this.textLyrics();
+      this.textQuote(this.data.quote)
 
       this.renderer.render(this.pixi.stage);
 
@@ -414,6 +415,25 @@ export default {
 
       this.covers.unshift(cover);
       this.coverTimeLast = Date.now();
+    },
+    textQuote(quote) {
+      if(this.quoteTextContainer) {
+        this.quoteTextContainer.destroy(true)
+      }
+      this.quoteTextContainer = new PIXI.Container();
+
+      const style = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 10*2,
+        fill: '#fff',
+      });
+
+      let text = new PIXI.Text(quote, style);
+      text.x = 260*2;
+      text.y = 659*2;
+      this.quoteTextContainer.addChild(text)
+
+      this.pixi.stage.addChild(this.quoteTextContainer)
     },
 
 
