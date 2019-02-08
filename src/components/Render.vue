@@ -11,9 +11,6 @@ import {mapGetters} from 'vuex';
 
 export default {
   name: 'Render',
-  components: {
-    // VueP5,
-  },
   data() {
     return {
       size: {
@@ -94,9 +91,6 @@ export default {
           }
           this.lastData.backgroundFilter = this.data.backgroundFilter
         }
-        else {
-          // this.pauseSound()
-        }
       }
       else if(this.data.backgroundColor) {
         this.lastData.backgroundFilter = null
@@ -172,16 +166,12 @@ export default {
       this.$refs.canvas.style.width = `${this.size.width/this.size.scale}px`;
       this.$refs.canvas.style.height = `${this.size.height/this.size.scale}px`;
         
-      // Append PixiJS to body		
       this.$refs.render.appendChild(this.renderer.view);
       
       this.pixi.stage = new PIXI.Container();
-
-      // this.setBackground();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
-
 
       let frequency = 0
       let volume = 0
@@ -197,7 +187,6 @@ export default {
         this.moveBackground(frequency)
       }
 
-      // if(this.frame == 0 && this.data.lyrics && !this.data.cover) {
       if(this.frame == 0 && this.data.lyrics) {
         this.textSound(volume)
       }
@@ -221,9 +210,8 @@ export default {
       }
 
       this.pixi.backgroundContainer = new PIXI.Container();
-      // get our image background as a texture
+
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
-      // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
 
       this.pixi.backgroundContainer.addChild(backgroundImage);
@@ -236,15 +224,12 @@ export default {
       if(this.pixi.filter) {
         this.pixi.backgroundContainer.removeChild(this.pixi.filter)
       }
-      // get our displacement map (image)	
+
       this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
-      // set to repeat in a tiled patern
       this.pixi.filter.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;	
     
-      // set filter to sprite container
       const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
     
-      // Add our filter and sprites to stage	
       this.pixi.backgroundContainer.filters = [displacementFilter];
       this.pixi.backgroundContainer.addChild(this.pixi.filter);
     },
@@ -288,8 +273,8 @@ export default {
         });
 
         let text = new PIXI.Text('ERYS', style);
+        text.x = 263*this.size.scale;
 
-        text.x = 263*2;
         if (i) {
           text.y = (55*this.size.scale*i)-64*this.size.scale;
         } else {
@@ -309,8 +294,8 @@ export default {
 
       const style = new PIXI.TextStyle({
         fontFamily: 'Aktiv Grotesk',
-        fontSize: 12*2,
-        fill: '#fff',
+        fontSize: 12*this.size.scale,
+        fill: '#ffffff',
       });
 
       let text = new PIXI.Text('JADEN SMITH - ERYS', style);
@@ -326,7 +311,7 @@ export default {
       const styleBis = new PIXI.TextStyle({
         fontFamily: 'Aktiv Grotesk',
         fontSize: 10*this.size.scale,
-        fill: '#fff',
+        fill: '#ffffff',
       });
 
       text = new PIXI.Text('COPYRIGHT 2019 - JADEN SMITH X YOU', styleBis);
@@ -438,7 +423,7 @@ export default {
 
       const style = new PIXI.TextStyle({
         fontFamily: 'Aktiv Grotesk',
-        fontSize: 10*2,
+        fontSize: 10*this.size.scale,
         fill: '#fff',
       });
 
