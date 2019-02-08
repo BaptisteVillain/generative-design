@@ -444,11 +444,37 @@ export default {
     saveCanvas() {
       const a = document.createElement('a');
       a.addEventListener('click', () => {
-        var data = this.renderer.view.toDataURL("image/png", 1);
-        a.href = this.renderer.view.toDataURL("image/png", 1);
+        const base64 = this.renderer.plugins.extract.base64()
+        var contentType = 'image/png';
+        var blob = this.b64toBlob(base64.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), contentType);
+        var blobUrl = URL.createObjectURL(blob);
+        a.href = blobUrl;
         a.download = 'ERYS.png';
       })
       a.click();
+    },
+    b64toBlob(b64Data, contentType, sliceSize) {
+      contentType = contentType || '';
+      sliceSize = sliceSize || 512;
+
+      var byteCharacters = atob(b64Data);
+      var byteArrays = [];
+
+      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+      }
+
+      var blob = new Blob(byteArrays, {type: contentType});
+      return blob;
     },
     map(num, in_min, in_max, out_min, out_max) {
       return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
