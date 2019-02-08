@@ -21,16 +21,17 @@ export default {
         height: 700 * window.devicePixelRatio,
         scale: window.devicePixelRatio
       },
-      speed: 1,
+      speed: 0,
       pixi: {},
       sound: {},
       frame: 0,
       covers: [],
-      coverDeltaX: -30,
-      coverDeltaY: -30,
+      coverDeltaX: 0,
+      coverDeltaY: 0,
       coverTimeLast: null,
-      coverTimeGap: 50,
-      coversIteration: 10,
+      coverTimeGap: 200,
+      coversIteration: 0,
+      lastData: {},
     }
   },
   computed: mapGetters({
@@ -40,18 +41,58 @@ export default {
   watch: {
     'update': function() {
       console.log(this.data);
-      if(this.data.backgroundColor) {
+      if(this.data.lyrics) {
+        this.sound.audio.play()
+      }
+      else if(this.data.backgroundFilter) {
+        if(this.data.backgroundFilter !== this.lastData.backgroundFilter) {
+          if(this.data.backgroundFilter === 'Icon') {
+            this.setBackgroundFilter(require('@/assets/img/filters/water2.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Icon.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Batman') {
+            this.setBackgroundFilter(require('@/assets/img/filters/ice.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Batman.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Watch me') {
+            this.setBackgroundFilter(require('@/assets/img/filters/alien.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Watch Me.mp3'))
+          }
+          else if(this.data.backgroundFilter === 'Plastic') {
+            this.setBackgroundFilter(require('@/assets/img/filters/soil.png'))
+            this.setSound(require('@/assets/music/Jaden Smith - Plastic.mp3'))
+          }
+          this.lastData.backgroundFilter = this.data.backgroundFilter
+        }
+        else {
+          this.pauseSound()
+        }
+      }
+      else if(this.data.backgroundColor) {
+        this.soundSetup()
         if(this.data.backgroundColor === 'Dark side') {
-          this.setCover();
+          this.setBackground(require('@/assets/img/cover-distorsion-dark.png'));
         }
         else if(this.data.backgroundColor === 'Soft side') {
-          this.setCover();
+          this.setBackground(require('@/assets/img/cover-distorsion.png'));
+        }
+      }
+      if(this.data.cover) {
+        if(this.data.cover === 'A$AP Rocky') {
+          this.setCover(-20, -35, 35, 20);
+        } else if(this.data.cover === 'Aminé') {
+          this.setCover(-10, 10, 20, 15);        
+        } else if(this.data.cover === 'Kid Cudi') {
+          this.setCover(-40, -5, 25, 25);        
+        } else if(this.data.cover === 'Tyler The Creator') {
+          this.setCover(50, 50, 25, 5);      
+        } else if(this.data.cover === 'Pharell') {
+          this.setCover(50, -50, 25, 10);      
         }
       }
     },
   },
   mounted() {
-    this.soundSetup()
     this.pixiInit()
     this.pixiRender()
   },
@@ -59,11 +100,12 @@ export default {
     soundSetup() {
       this.sound.audio = new Audio();
 
+
       window.AudioContext = window.AudioContext||window.webkitAudioContext; // old safari trick
 
       const audioContext = new AudioContext();
 
-      this.setSound()
+      // this.setSound()
 
       this.sound.analyser = audioContext.createAnalyser();
       this.sound.analyser.connect(audioContext.destination);
@@ -75,9 +117,17 @@ export default {
         this.sound.audio.play()
       });
     },
-    setSound() {
-      this.sound.audio.src = require('@/assets/music/Jaden Smith - Watch Me.mp3')
+    setSound(music) {
+      this.sound.audio.src = music
       this.sound.audio.load();
+    },
+    pauseSound() {
+      if(!this.sound.audio.paused) {
+        this.sound.audio.pause()
+      }
+      else {
+        this.sound.audio.play()
+      }
     },
     getDataFromAudio(){
       //this.sound.analyser.fftSize = 2048;
@@ -103,44 +153,62 @@ export default {
       
       this.pixi.stage = new PIXI.Container();
 
-      this.setBackground();
+      // this.setBackground();
     },
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
 
-      this.textStatic()
 
       let frequency = 0
       let volume = 0
-      if(this.sound.audio) {
+      if(this.data.backgroundFilter) {
         let dataSound = this.getDataFromAudio()
-        frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
+        if(!this.data.lyrics) {
+          frequency = this.map(dataSound.f[0], 0, 200, 0, 10)
+        }
         volume = Math.abs(Math.round(this.map(dataSound.t[0], 128, 200, 1, 9)))
       }
       
-      this.moveBackground(frequency)
+      if(this.pixi.filter) {
+        this.moveBackground(frequency)
+      }
 
-      if(this.frame == 0) {
+      if(this.frame == 0 && this.data.lyrics) {
         this.textSound(volume)
       }
 
       this.createCover();
-      
+      this.drawCovers();
+
+      this.textStatic();
+      this.textLyrics();
 
       this.renderer.render(this.pixi.stage);
 
       this.frame = (this.frame+1)%5
     },
-    setBackground() {
-      let backgroundImageSrc = require('@/assets/img/background.png');
-      let filterImageSrc = require('@/assets/img/filters/water.png');
+    setBackground(backgroundImageSrc) {
+      if(this.pixi.backgroundContainer) {
+        console.log('destroy')
+        this.pixi.backgroundContainer.destroy(true)
+      }
 
-      const backgroundContainer = new PIXI.Container();
+      this.pixi.backgroundContainer = new PIXI.Container();
       // get our image background as a texture
       const texture = PIXI.Texture.fromImage(backgroundImageSrc);
       // add it to a sprite
       const backgroundImage = new PIXI.Sprite(texture);
 
+      this.pixi.backgroundContainer.addChild(backgroundImage);
+
+      this.resizeBackground(backgroundImage)
+
+      this.pixi.stage.addChild(this.pixi.backgroundContainer)
+    },
+    setBackgroundFilter(filterImageSrc) {
+      if(this.pixi.filter) {
+        this.pixi.backgroundContainer.removeChild(this.pixi.filter)
+      }
       // get our displacement map (image)	
       this.pixi.filter = PIXI.Sprite.fromImage(filterImageSrc);
       // set to repeat in a tiled patern
@@ -150,13 +218,8 @@ export default {
       const displacementFilter = new PIXI.filters.DisplacementFilter(this.pixi.filter);
     
       // Add our filter and sprites to stage	
-      backgroundContainer.filters = [displacementFilter];
-      backgroundContainer.addChild(this.pixi.filter);
-      backgroundContainer.addChild(backgroundImage);
-
-      this.resizeBackground(backgroundImage)
-
-      this.pixi.stage.addChild(backgroundContainer)
+      this.pixi.backgroundContainer.filters = [displacementFilter];
+      this.pixi.backgroundContainer.addChild(this.pixi.filter);
     },
     resizeBackground(backgroundImage) {
       // Resize image
@@ -200,9 +263,9 @@ export default {
         let text = new PIXI.Text('ERYS', style);
         text.x = 263*2;
         if (i) {
-          text.y = (70*2*i)-64*this.size.scale;
+          text.y = (55*2*i)-64*this.size.scale;
         } else {
-          text.y = (70*2)-64*this.size.scale;
+          text.y = (55*2)-64*this.size.scale;
         }
 
         this.pixi.textContainer.addChild(text)
@@ -245,36 +308,83 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
-    setCover() {
-      this.coverContainer = new PIXI.Container();
-      this.pixi.stage.addChild(this.coverContainer);
+    setTextLyrics(text, size, position) {
+
     },
-    addCover() {
+    textLyrics() {
+       if(this.lyricsContainer) {
+        this.lyricsContainer.destroy(true)
+      }
+      this.lyricsContainer = new PIXI.Container();
+
+      const style = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 8*this.size.scale,
+        fill: '#f0dd00',
+        wordWrap: true,
+        wordWrapWidth: 215*this.size.scale,
+        align: 'center',
+      })
+
+      const text = new PIXI.Text('“Continental drift, and the next pole shift I ain\'t worried bout the science I\'m just glad we coexist”', style);
+      text.anchor.set(.5, 0);
+      text.x = this.size.width/2;
+
+      this.lyricsContainer.addChild(text);
+      this.pixi.stage.addChild(this.lyricsContainer);
+    },
+    drawCovers() {
+      if(this.pixi.coverContainer) {
+        this.pixi.coverContainer.destroy();
+      }
+      this.pixi.coverContainer = new PIXI.Container();
+
       const coversrc = require('@/assets/img/cover.png');
       const coverTexture = new PIXI.Texture.fromImage(coversrc);
+      
 
-      let cover = new PIXI.Sprite(coverTexture);
-      // cover.blendMode = PIXI.BLEND_MODES.LIGTHEN;
+      this.covers.forEach(cover => {
+        const sprite = new PIXI.Sprite(coverTexture);
 
-      cover.width = 300 * this.size.scale;
-      cover.height = 300 * this.size.scale;
+        sprite.anchor.set(.5);
+        sprite.alpha = .7;
+        
+        sprite.width = 300 * this.size.scale;
+        sprite.height = 300 * this.size.scale;
 
-      cover.anchor.set(.5);
-      cover.x = (this.size.width/2) + (this.covers.length * this.coverDeltaX);
-      cover.y = (this.size.height/2) + (this.covers.length * this.coverDeltaY);
+        sprite.x = cover.x;
+        sprite.y = cover.y;
+        this.pixi.coverContainer.addChild(sprite);
+      });
 
-      this.coverContainer.addChild(cover);
-      this.coverTimeLast = Date.now();
+      this.pixi.stage.addChild(this.pixi.coverContainer);
+    },
+    setCover(dx, dy, time, iteration) {
+      console.log(dx, dy, time, iteration);
+      this.coverDeltaX = dx;
+      this.coverDeltaY = dy;
 
-      this.covers.push(cover);
+      this.coverTimeLast = null;
+      this.coverTimeGap = time;
+      this.coversIteration = iteration;
+      this.covers = [];
     },
     createCover() {
-      if(!this.coverTimeLast) this.coverTimeLast = Date.now();
       const currentTime = Date.now();
+      if(!this.coverTimeLast) this.coverTimeLast = currentTime;
 
-      if(this.coverContainer && this.coversIteration > this.covers.length && currentTime - this.coverTimeLast > this.coverTimeGap) {
+      if(this.coversIteration > this.covers.length && currentTime - this.coverTimeLast > this.coverTimeGap) {
         this.addCover();
       }
+    },
+    addCover() {
+      let cover = {
+        x: (this.size.width/2) + (this.covers.length * this.coverDeltaX),
+        y: (this.size.height/2) + (this.covers.length * this.coverDeltaY),
+      };
+
+      this.covers.unshift(cover);
+      this.coverTimeLast = Date.now();
     },
 
 
