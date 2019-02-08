@@ -32,6 +32,10 @@ export default {
       coverTimeGap: 200,
       coversIteration: 0,
       lastData: {},
+      lyricsX: 0,
+      lyricsY: 0,
+      lyricsSize: 0,
+      lyricsText: null
     }
   },
   computed: mapGetters({
@@ -55,14 +59,22 @@ export default {
         }
       }
       else if(this.data.lyrics) {
-        // this.sound.audio.play()
         this.coversIteration = 0
         this.covers = []
+
+        const size = 1 + Math.random() * 4;
+        const dx = (50 + Math.random() * 100) * Math.round(Math.random()) * 2 - 1;
+        const dy = (50 + Math.random() * 200) * Math.round(Math.random()) * 2 - 1;
+        this.setTextLyrics(this.data.lyrics, size, dx, dy);
       }
       else if(this.data.backgroundFilter) {
         if(this.pixi.textContainer) {
           this.pixi.textContainer.destroy(true)
         }
+        if(this.lyricsContainer) {
+          this.lyricsContainer.destroy(true)
+        }
+
         if(this.data.backgroundFilter !== this.lastData.backgroundFilter) {
           if(this.data.backgroundFilter === 'Icon') {
             this.setBackgroundFilter(require('@/assets/img/filters/water2.png'))
@@ -142,7 +154,7 @@ export default {
       }
     },
     getDataFromAudio(){
-      //this.sound.analyser.fftSize = 2048;
+      this.sound.analyser.fftSize = 2048;
       const freqByteData = new Uint8Array(this.sound.analyser.fftSize/2);
       const timeByteData = new Uint8Array(this.sound.analyser.fftSize/2);
       this.sound.analyser.getByteFrequencyData(freqByteData);
@@ -189,10 +201,13 @@ export default {
         this.textSound(volume)
       }
 
-      this.createCover();
-      this.drawCovers();
+      if(this.data.cover && this.data.quote === null || this.data.quote === undefined) {
+        this.createCover();
+        this.drawCovers();
+      }
 
       this.textStatic();
+      if(this.data.lyrics) this.textLyrics();
 
       this.renderer.render(this.pixi.stage);
 
@@ -319,10 +334,35 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
-    // setCover() {
-    //   this.coverContainer = new PIXI.Container();
-    //   this.pixi.stage.addChild(this.coverContainer);
-    // },
+    setTextLyrics(text, size, dX, dY) {
+      this.lyricsX = dX,
+      this.lyricsY = dY,
+      this.lyricsSize = size,
+      this.lyricsText = text
+    },
+    textLyrics() {
+       if(this.lyricsContainer) {
+        this.lyricsContainer.destroy(true)
+      }
+      this.lyricsContainer = new PIXI.Container();
+
+      const style = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 8*this.lyricsSize*this.size.scale,
+        fill: '#f0dd00',
+        wordWrap: true,
+        wordWrapWidth: 215*(.5 + this.lyricsSize/2)*this.size.scale,
+        align: 'center',
+      })
+
+      const text = new PIXI.Text(this.lyricsText, style);
+      text.anchor.set(.5, 0);
+      text.x = this.size.width/2 + this.lyricsX;
+      text.y = this.size.height/2 + this.lyricsY;
+
+      this.lyricsContainer.addChild(text);
+      this.pixi.stage.addChild(this.lyricsContainer);
+    },
     drawCovers() {
       if(this.pixi.coverContainer) {
         this.pixi.coverContainer.destroy();
