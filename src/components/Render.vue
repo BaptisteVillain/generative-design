@@ -173,9 +173,9 @@ export default {
         this.moveBackground(frequency)
       }
 
-      // if(this.frame == 0) {
-      //   this.textSound(volume)
-      // }
+      if(this.frame == 0 && this.data.lyrics) {
+        this.textSound(volume)
+      }
 
       this.createCover();
       this.drawCovers();
