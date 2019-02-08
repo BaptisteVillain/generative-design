@@ -202,7 +202,8 @@ export default {
         this.moveBackground(frequency)
       }
 
-      if(this.frame == 0 && this.data.lyrics && !this.data.cover) {
+      // if(this.frame == 0 && this.data.lyrics && !this.data.cover) {
+      if(this.frame == 0 && this.data.lyrics) {
         this.textSound(volume)
       }
 
