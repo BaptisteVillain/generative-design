@@ -26,11 +26,11 @@ export default {
       sound: {},
       frame: 0,
       covers: [],
-      coverDeltaX: -30,
-      coverDeltaY: -30,
+      coverDeltaX: 0,
+      coverDeltaY: 0,
       coverTimeLast: null,
-      coverTimeGap: 50,
-      coversIteration: 10,
+      coverTimeGap: 200,
+      coversIteration: 0,
       lastData: {},
     }
   },
@@ -77,6 +77,19 @@ export default {
           this.setBackground(require('@/assets/img/cover-distorsion.png'));
         }
       }
+      if(this.data.cover) {
+        if(this.data.cover === 'A$AP Rocky') {
+          this.setCover(-20, -35, 35, 20);
+        } else if(this.data.cover === 'Aminé') {
+          this.setCover(-10, 10, 20, 15);        
+        } else if(this.data.cover === 'Kid Cudi') {
+          this.setCover(-40, -5, 25, 25);        
+        } else if(this.data.cover === 'Tyler The Creator') {
+          this.setCover(50, 50, 25, 5);      
+        } else if(this.data.cover === 'Pharell') {
+          this.setCover(50, -50, 25, 10);      
+        }
+      }
     },
   },
   mounted() {
@@ -86,6 +99,7 @@ export default {
   methods: {
     soundSetup() {
       this.sound.audio = new Audio();
+
 
       window.AudioContext = window.AudioContext||window.webkitAudioContext; // old safari trick
 
@@ -144,7 +158,6 @@ export default {
     pixiRender() {
       requestAnimationFrame(this.pixiRender);
 
-      this.textStatic()
 
       let frequency = 0
       let volume = 0
@@ -164,8 +177,10 @@ export default {
       //   this.textSound(volume)
       // }
 
-      // this.createCover();
-      
+      this.createCover();
+      this.drawCovers();
+
+      this.textStatic();
 
       this.renderer.render(this.pixi.stage);
 
@@ -292,36 +307,62 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
-    setCover() {
-      this.coverContainer = new PIXI.Container();
-      this.pixi.stage.addChild(this.coverContainer);
-    },
-    addCover() {
+    // setCover() {
+    //   this.coverContainer = new PIXI.Container();
+    //   this.pixi.stage.addChild(this.coverContainer);
+    // },
+    drawCovers() {
+      if(this.pixi.coverContainer) {
+        this.pixi.coverContainer.destroy();
+      }
+      this.pixi.coverContainer = new PIXI.Container();
+
       const coversrc = require('@/assets/img/cover.png');
       const coverTexture = new PIXI.Texture.fromImage(coversrc);
+      
 
-      let cover = new PIXI.Sprite(coverTexture);
-      // cover.blendMode = PIXI.BLEND_MODES.LIGTHEN;
+      this.covers.forEach(cover => {
+        const sprite = new PIXI.Sprite(coverTexture);
 
-      cover.width = 300 * this.size.scale;
-      cover.height = 300 * this.size.scale;
+        sprite.anchor.set(.5);
+        sprite.alpha = .7;
+        
+        sprite.width = 300 * this.size.scale;
+        sprite.height = 300 * this.size.scale;
 
-      cover.anchor.set(.5);
-      cover.x = (this.size.width/2) + (this.covers.length * this.coverDeltaX);
-      cover.y = (this.size.height/2) + (this.covers.length * this.coverDeltaY);
+        sprite.x = cover.x;
+        sprite.y = cover.y;
+        this.pixi.coverContainer.addChild(sprite);
+      });
 
-      this.coverContainer.addChild(cover);
-      this.coverTimeLast = Date.now();
+      this.pixi.stage.addChild(this.pixi.coverContainer);
+    },
+    setCover(dx, dy, time, iteration) {
+      console.log(dx, dy, time, iteration);
+      this.coverDeltaX = dx;
+      this.coverDeltaY = dy;
 
-      this.covers.push(cover);
+      this.coverTimeLast = null;
+      this.coverTimeGap = time;
+      this.coversIteration = iteration;
+      this.covers = [];
     },
     createCover() {
-      if(!this.coverTimeLast) this.coverTimeLast = Date.now();
       const currentTime = Date.now();
+      if(!this.coverTimeLast) this.coverTimeLast = currentTime;
 
-      if(this.coverContainer && this.coversIteration > this.covers.length && currentTime - this.coverTimeLast > this.coverTimeGap) {
+      if(this.coversIteration > this.covers.length && currentTime - this.coverTimeLast > this.coverTimeGap) {
         this.addCover();
       }
+    },
+    addCover() {
+      let cover = {
+        x: (this.size.width/2) + (this.covers.length * this.coverDeltaX),
+        y: (this.size.height/2) + (this.covers.length * this.coverDeltaY),
+      };
+
+      this.covers.unshift(cover);
+      this.coverTimeLast = Date.now();
     },
 
 
