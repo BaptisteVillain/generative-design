@@ -174,11 +174,11 @@ export default {
   watch: {
     step: function () {
       this.$store.commit('setData', this.data);
-      this.$store.commit('setUpdate');
+      // this.$store.commit('setUpdate');
     },
     data: function () {
       this.$store.commit('setData', this.data);
-      this.$store.commit('setUpdate');
+      // this.$store.commit('setUpdate');
     }
   },
   methods:{
@@ -191,7 +191,7 @@ export default {
     onPrevious(stepSlug) {
       this.data[stepSlug] = null
       this.$store.commit('setData', this.data);
-      this.$store.commit('setUpdate');
+      // this.$store.commit('setUpdate');
       this.step--
     }
   }
