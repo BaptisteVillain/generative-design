@@ -3,7 +3,7 @@
     <div class="form-step">
       <div class="step-title">
         <span class="title-shadow"
-          v-for="index in 6"
+          v-for="index in 7"
           :key="index"
           :style="{'transform': `translate(${index*5}px, -${index*5}px)`, 'z-index': index*-1}"
           >
@@ -23,7 +23,12 @@
             :label="select.label"
             :active="currentStep.selected === index ? true : false"
             @click.native="onSelect(currentStep.slug, select.label, index)"
-            />
+          />
+          <FormTextarea
+            v-if="step === form.length -1"
+            v-model="textareaText"
+          />
+          {{textareaText}}
       </div>
 
       <div class="step-footer">
@@ -39,15 +44,18 @@
 
 import Vue from 'vue'
 import FormSelect from '@/components/FormSelect.vue';
+import FormTextarea from '@/components/FormTextarea.vue';
 
 export default {
   name: 'Form',
   components: {
-    FormSelect
+    FormSelect,
+    FormTextarea
   },
   data() {
     return {
       step: 0,
+      textareaText: null,
       data: {},
       form: [
         {
@@ -138,13 +146,22 @@ export default {
             }
           ]
         },
+        {
+          question: 'Write a note to your future self',
+          
+          select: [],
+          selected: 0
+        },
       ],
     }
   },
   computed: {
     currentStep: function () {
       const current = this.form[this.step];
-      if(current.slug) {
+      if (current.slug === 'quote'){
+        this.data[current.slug] = current.select[current.selected].label;
+      }
+      else if(current.slug) {
         this.data[current.slug] = current.select[current.selected].label;
       }
 
