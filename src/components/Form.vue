@@ -3,7 +3,7 @@
     <div class="form-step">
       <div class="step-title">
         <span class="title-shadow"
-          v-for="index in 7"
+          v-for="index in 8"
           :key="index"
           :style="{'transform': `translate(${index*5}px, -${index*5}px)`, 'z-index': index*-1}"
           >
@@ -25,10 +25,10 @@
             @click.native="onSelect(currentStep.slug, select.label, index)"
           />
           <FormTextarea
-            v-if="step === form.length -1"
+            v-if="step === form.length - 2"
             v-model="textareaText"
           />
-          {{textareaText}}
+          <button v-if="step === form.length - 1" ref="button" @click="downloadFile()" download="Jaden Smith and you.png" >Download</button>
       </div>
 
       <div class="step-footer">
@@ -152,6 +152,12 @@ export default {
           select: [],
           selected: 0
         },
+        {
+          title: 'End.',
+          question: 'Download your unique poster by clicking the button below.',
+          select: [],
+          selected: 0,
+        },
       ],
     }
   },
@@ -187,6 +193,14 @@ export default {
       this.form[this.step].selected = index; 
       this.$store.commit('setData', this.data);
       this.$store.commit('setUpdate');
+    },
+    
+    downloadFile(){
+        console.log('hi')
+        const canvas = document.querySelector('canvas')
+        const dataURL = canvas.toDataURL('image/png');
+        this.$refs.button.href = dataURL;
+      
     }
   }
 }
@@ -254,26 +268,35 @@ export default {
         flex-direction: row;
         justify-content: flex-end;
         margin-top: auto;
-        button {
-          -webkit-appearance: none;
-          background: none;
-          color: #ffffff;
+
+        button{
+          font-size: 12px;
+          margin-left: 30px;
+          margin-right: 0;
+          border: none;
           font-family: 'Druk Wide';
           font-weight: 900;
-          font-size: 12px;
-          text-transform: uppercase;
-          border: none;
-          padding: none;
-          cursor: pointer;
-          margin-right: 0px;
-          margin-left: 30px;
-          outline: none;
-          &::selection {
-            background: rgba(#ffffff, .98);
-            color: #000000;
-          }
         }
       }
     }
+
+    button {
+      -webkit-appearance: none;
+      background: none;
+      color: #ffffff;
+      font-family: 'Aktiv Grotesk';
+      font-weight: 400;
+      font-size: 18px;
+      text-transform: uppercase;
+      padding: 15px 27px;
+      cursor: pointer;
+      outline: none;
+      border: 2px solid #fff;
+
+      &::selection {
+        background: rgba(#ffffff, .98);
+        color: #000000;
+      }
+        }
   }
 </style>
