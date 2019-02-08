@@ -181,6 +181,7 @@ export default {
       this.drawCovers();
 
       this.textStatic();
+      this.textLyrics();
 
       this.renderer.render(this.pixi.stage);
 
@@ -307,10 +308,31 @@ export default {
 
       this.pixi.stage.addChild(this.staticTextContainer)
     },
-    // setCover() {
-    //   this.coverContainer = new PIXI.Container();
-    //   this.pixi.stage.addChild(this.coverContainer);
-    // },
+    setTextLyrics(text, size, position) {
+
+    },
+    textLyrics() {
+       if(this.lyricsContainer) {
+        this.lyricsContainer.destroy(true)
+      }
+      this.lyricsContainer = new PIXI.Container();
+
+      const style = new PIXI.TextStyle({
+        fontFamily: 'Aktiv Grotesk',
+        fontSize: 8*this.size.scale,
+        fill: '#f0dd00',
+        wordWrap: true,
+        wordWrapWidth: 215*this.size.scale,
+        align: 'center',
+      })
+
+      const text = new PIXI.Text('“Continental drift, and the next pole shift I ain\'t worried bout the science I\'m just glad we coexist”', style);
+      text.anchor.set(.5, 0);
+      text.x = this.size.width/2;
+
+      this.lyricsContainer.addChild(text);
+      this.pixi.stage.addChild(this.lyricsContainer);
+    },
     drawCovers() {
       if(this.pixi.coverContainer) {
         this.pixi.coverContainer.destroy();
