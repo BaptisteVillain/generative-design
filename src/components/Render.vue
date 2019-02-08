@@ -215,7 +215,6 @@ export default {
     },
     setBackground(backgroundImageSrc) {
       if(this.pixi.backgroundContainer) {
-        console.log('destroy')
         this.pixi.backgroundContainer.destroy(true)
       }
 
@@ -287,11 +286,12 @@ export default {
         });
 
         let text = new PIXI.Text('ERYS', style);
+
         text.x = 263*2;
         if (i) {
-          text.y = (55*2*i)-64*this.size.scale;
+          text.y = (55*this.size.scale*i)-64*this.size.scale;
         } else {
-          text.y = (55*2)-64*this.size.scale;
+          text.y = (55*this.size.scale)-64*this.size.scale;
         }
 
         this.pixi.textContainer.addChild(text)
@@ -390,7 +390,6 @@ export default {
       this.pixi.stage.addChild(this.pixi.coverContainer);
     },
     setCover(dx, dy, time, iteration) {
-      console.log(dx, dy, time, iteration);
       this.coverDeltaX = dx;
       this.coverDeltaY = dy;
 
