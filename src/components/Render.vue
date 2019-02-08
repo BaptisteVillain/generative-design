@@ -214,7 +214,7 @@ export default {
 
       this.textStatic();
       if(this.data.lyrics) this.textLyrics();
-      if(this.data.quote) this.textQuote(this.data.quote);
+      this.textQuote(this.data.quote);
 
       this.renderer.render(this.pixi.stage);
 
@@ -446,6 +446,10 @@ export default {
         fontSize: 10*2,
         fill: '#fff',
       });
+
+      if(!quote) {
+        quote = ''
+      }
 
       let text = new PIXI.Text(quote.toUpperCase(), style);
       let metrics = PIXI.TextMetrics.measureText(quote.toUpperCase(), style);
