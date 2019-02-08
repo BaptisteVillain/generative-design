@@ -60,7 +60,7 @@ export default {
       form: [
         {
           title: 'Start.',
-          question: 'Activate your volume to fully enjoy the experience',
+          question: 'Activate your volume to fully enjoy the experience.',
           nextContent: 'Create your poster',
           select: [],
           selected: 0,
@@ -147,10 +147,11 @@ export default {
           ]
         },
         {
-          question: 'Write a note to your future self',
+          question: 'Write a note to your future self.',
           slug:'quote',
           select: [],
-          selected: 0
+          selected: 0,
+          nextContent: 'End',
         },
         {
           title: 'End.',
