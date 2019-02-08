@@ -37,6 +37,12 @@ export default {
   height: 50px;
   resize: none;
   line-height: 45px;
+  transition: border 0.2s ease-in;
+}
+
+.textarea:focus{
+  outline: none;
+  border: 2px solid rgba(255, 255, 255, 0.35);
 }
 
 .textarea-border-top{

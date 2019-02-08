@@ -148,7 +148,7 @@ export default {
         },
         {
           question: 'Write a note to your future self',
-          
+          slug:'quote',
           select: [],
           selected: 0
         },
@@ -159,7 +159,7 @@ export default {
     currentStep: function () {
       const current = this.form[this.step];
       if (current.slug === 'quote'){
-        this.data[current.slug] = current.select[current.selected].label;
+        this.data[current.slug] = this.textareaText;
       }
       else if(current.slug) {
         this.data[current.slug] = current.select[current.selected].label;
