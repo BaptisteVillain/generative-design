@@ -45,7 +45,6 @@ export default {
   }),
   watch: {
     'update': function() {
-      console.log(this.data);
       if(this.data.cover) {
         if(this.data.cover === 'A$AP Rocky') {
           this.setCover(-20, -35, 35, 20);
@@ -128,19 +127,15 @@ export default {
     soundSetup() {
       this.sound.audio = new Audio();
 
-
       window.AudioContext = window.AudioContext||window.webkitAudioContext; // old safari trick
 
       const audioContext = new AudioContext();
-
-      // this.setSound()
 
       this.sound.analyser = audioContext.createAnalyser();
       this.sound.analyser.connect(audioContext.destination);
       const source = audioContext.createMediaElementSource(this.sound.audio);
 
       this.sound.audio.addEventListener("canplaythrough", () => {
-        console.log(this.sound.audio)
         source.connect(this.sound.analyser);
         this.sound.audio.play()
       });
