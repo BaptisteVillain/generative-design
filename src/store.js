@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     data: {},
-    update: Date.now()
+    update: Date.now(),
+    download: Date.now(),
   },
   getters: {
     getData: state => {
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     getUpdate: state => {
       return state.update;
+    },
+    onDownload: state => {
+      return state.download;
     }
   },
   mutations: {
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     },
     setUpdate(state) {
       state.update = Date.now();
+    },
+    setDownload(state) {
+      state.download = Date.now();
     }
   },
 })
